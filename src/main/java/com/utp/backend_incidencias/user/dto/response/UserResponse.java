@@ -21,4 +21,8 @@ public class UserResponse {
     private String dni;
 
     private Role role;
+
+    private Long createdById;
+
+    private String createdByUsername;
 }

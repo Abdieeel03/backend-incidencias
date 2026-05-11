@@ -31,4 +31,13 @@ public class ErrorMessages {
 
     public static final String CURRENT_PASSWORD_INCORRECT =
             "La contraseña actual es incorrecta";
+
+    public static final String INVALID_ROLE =
+            "Rol inválido para generacion de username";
+
+    public static final String FORBIDDEN_ACCESS =
+            "Acceso denegado: no tienes permisos para realizar esta acción";
+
+    public static final String UNAUTHORIZED_ACCESS =
+            "Acceso no autorizado. Por favor inicia sesión nuevamente";
 }

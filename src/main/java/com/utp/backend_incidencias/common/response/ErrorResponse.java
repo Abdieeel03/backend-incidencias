@@ -19,5 +19,7 @@ public class ErrorResponse {
 
     private String path;
 
+    private String method;
+
     private LocalDateTime timestamp;
 }

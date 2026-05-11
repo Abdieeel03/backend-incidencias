@@ -30,6 +30,7 @@ public class GlobalExceptionHandler {
                 .error(HttpStatus.NOT_FOUND.name())
                 .status(HttpStatus.NOT_FOUND.value())
                 .path(request.getRequestURI())
+                .method(request.getMethod())
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -49,6 +50,7 @@ public class GlobalExceptionHandler {
                 .error(HttpStatus.BAD_REQUEST.name())
                 .status(HttpStatus.BAD_REQUEST.value())
                 .path(request.getRequestURI())
+                .method(request.getMethod())
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -66,6 +68,7 @@ public class GlobalExceptionHandler {
                 .error(HttpStatus.FORBIDDEN.name())
                 .status(HttpStatus.FORBIDDEN.value())
                 .path(request.getRequestURI())
+                .method(request.getMethod())
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -85,6 +88,7 @@ public class GlobalExceptionHandler {
                 .error(HttpStatus.UNAUTHORIZED.name())
                 .status(HttpStatus.UNAUTHORIZED.value())
                 .path(request.getRequestURI())
+                .method(request.getMethod())
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -104,6 +108,7 @@ public class GlobalExceptionHandler {
                 .error(HttpStatus.CONFLICT.name())
                 .status(HttpStatus.CONFLICT.value())
                 .path(request.getRequestURI())
+                .method(request.getMethod())
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -135,6 +140,7 @@ public class GlobalExceptionHandler {
                 .error(HttpStatus.BAD_REQUEST.name())
                 .status(HttpStatus.BAD_REQUEST.value())
                 .path(request.getRequestURI())
+                .method(request.getMethod())
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -154,6 +160,7 @@ public class GlobalExceptionHandler {
                 .error(HttpStatus.INTERNAL_SERVER_ERROR.name())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .path(request.getRequestURI())
+                .method(request.getMethod())
                 .timestamp(LocalDateTime.now())
                 .build();
 

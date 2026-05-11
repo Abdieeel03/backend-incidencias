@@ -42,6 +42,10 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Role role;
 
+    @ManyToOne
+    @JoinColumn(name = "created_by_id")
+    private User createdBy;
+
     @OneToMany(mappedBy = "parent")
     private List<Student> students;
 

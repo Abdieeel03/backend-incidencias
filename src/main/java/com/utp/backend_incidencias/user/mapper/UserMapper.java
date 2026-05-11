@@ -28,6 +28,16 @@ public class UserMapper {
                 .name(user.getName())
                 .dni(user.getDni())
                 .role(user.getRole())
+                .createdById(
+                        user.getCreatedBy() != null
+                                ? user.getCreatedBy().getId()
+                                : null
+                )
+                .createdByUsername(
+                        user.getCreatedBy() != null
+                                ? user.getCreatedBy().getUsername()
+                                : null
+                )
                 .build();
     }
 
@@ -38,7 +48,4 @@ public class UserMapper {
         user.setRole(req.getRole());
     }
 
-    public static void updatePassword(User user, ChangePasswordRequest req){
-        user.setPassword(req.getNewPassword());
-    }
 }
