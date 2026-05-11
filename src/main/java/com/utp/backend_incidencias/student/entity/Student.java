@@ -27,7 +27,7 @@ public class Student extends BaseEntity {
     @Column(nullable = false, unique = true, length = 8)
     private String dni;
 
-    @Column(name = "student_code", nullable = false, unique = true, length = 10)
+    @Column(name = "student_code", nullable = false, unique = true, length = 10, updatable = false)
     private String studentCode;
 
     @Column(nullable = false)
