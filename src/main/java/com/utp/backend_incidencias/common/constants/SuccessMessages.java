@@ -21,6 +21,12 @@ public class SuccessMessages {
     public static final String USER_DELETED =
             "Usuario eliminado correctamente";
 
+    public static final String USER_REGISTERED =
+            "Usuario registrado correctamente";
+
+    public static final String USER_LOGUED =
+            "Usuario logueado correctamente";
+
     public static final String PASSWORD_UPDATED =
             "Contraseña actualizada correctamente";
 

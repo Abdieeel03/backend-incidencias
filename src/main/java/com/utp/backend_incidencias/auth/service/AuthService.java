@@ -3,12 +3,12 @@ package com.utp.backend_incidencias.auth.service;
 import com.utp.backend_incidencias.auth.dto.request.LoginRequest;
 import com.utp.backend_incidencias.auth.dto.request.RegisterRequest;
 import com.utp.backend_incidencias.auth.dto.response.AuthResponse;
+import com.utp.backend_incidencias.auth.factory.UserFactory;
 import com.utp.backend_incidencias.common.constants.ErrorMessages;
 import com.utp.backend_incidencias.common.exception.ConflictException;
 import com.utp.backend_incidencias.common.exception.UnauthorizedException;
 import com.utp.backend_incidencias.security.jwt.JwtService;
 import com.utp.backend_incidencias.user.entity.User;
-import com.utp.backend_incidencias.user.enums.Role;
 import com.utp.backend_incidencias.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,18 +34,13 @@ public class AuthService {
             throw new ConflictException(ErrorMessages.DNI_ALREADY_EXISTS);
         }
 
-        if (userRepository.existsByUsername(generateUsername(req.getDni()))) {
-            throw new ConflictException("Username ya existe");
-        }
+        User user = UserFactory.createCoordinator(req, passwordEncoder);
 
-        User user = User.builder()
-                .name(req.getName())
-                .email(req.getEmail())
-                .dni(req.getDni())
-                .role(Role.COORDINADOR)
-                .username(generateUsername(req.getDni()))
-                .password(passwordEncoder.encode(req.getPassword()))
-                .build();
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new ConflictException(
+                    ErrorMessages.USERNAME_ALREADY_EXISTS
+            );
+        }
 
         User savedUser = userRepository.save(user);
 
@@ -86,9 +81,5 @@ public class AuthService {
                 .email(user.getEmail())
                 .role(user.getRole())
                 .build();
-    }
-
-    private String generateUsername(String dni) {
-        return "C" + dni;
     }
 }
