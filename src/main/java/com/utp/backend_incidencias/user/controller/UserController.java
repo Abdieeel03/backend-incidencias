@@ -70,7 +70,7 @@ public class UserController {
             @PathVariable Long id
     ) {
 
-        UserResponse user = userService.getUserById(id); // TODO: Verificar si es un usuario creado por el que lo busca
+        UserResponse user = userService.getUserById(id);
 
         return ResponseEntity.ok(
                 ApiResponse.<UserResponse>builder()
@@ -91,12 +91,12 @@ public class UserController {
     ) {
 
         UserResponse updatedUser =
-                userService.updateUser(id, req); // TODO: Verificar si es un usuario creado por el que lo busca
+                userService.updateUser(id, req);
 
         return ResponseEntity.ok(
                 ApiResponse.<UserResponse>builder()
                         .success(true)
-                        .message("Usuario actualizado correctamente")
+                        .message(SuccessMessages.USER_UPDATED)
                         .data(updatedUser)
                         .build()
         );
@@ -108,12 +108,12 @@ public class UserController {
             @PathVariable Long id
     ) {
 
-        userService.deleteUser(id); // TODO: Verificar si es un usuario creado por el que lo busca
+        userService.deleteUser(id);
 
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .success(true)
-                        .message("Usuario eliminado correctamente")
+                        .message(SuccessMessages.USER_DELETED)
                         .data(null)
                         .build()
         );
@@ -132,7 +132,7 @@ public class UserController {
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .success(true)
-                        .message("Contraseña actualizada correctamente")
+                        .message(SuccessMessages.PASSWORD_UPDATED)
                         .data(null)
                         .build()
         );

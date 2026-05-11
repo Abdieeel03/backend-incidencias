@@ -6,6 +6,7 @@ import com.utp.backend_incidencias.common.exception.ForbiddenException;
 import com.utp.backend_incidencias.common.exception.ResourceNotFoundException;
 import com.utp.backend_incidencias.common.exception.UnauthorizedException;
 import com.utp.backend_incidencias.user.dto.request.ChangePasswordRequest;
+import com.utp.backend_incidencias.user.dto.request.CoordinatorUpdateUserRequest;
 import com.utp.backend_incidencias.user.dto.request.CreateUserRequest;
 import com.utp.backend_incidencias.user.dto.request.UpdateUserRequest;
 import com.utp.backend_incidencias.user.dto.response.UserResponse;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -81,7 +83,7 @@ public class UserServiceImpl implements UserService {
                     .toList();
         }
 
-        return userRepository.findByCreatedBy(currentUser)
+        return userRepository.findByCreatedByAndIsDeletedFalse(currentUser)
                 .stream()
                 .map(UserMapper::toResponse)
                 .toList();
@@ -93,13 +95,15 @@ public class UserServiceImpl implements UserService {
         User currentUser = getCurrentUser();
         User user = findUserById(id);
 
-        if (currentUser.getRole() != Role.ADMIN &&
-                !user.getCreatedBy().getId()
-                        .equals(currentUser.getId())) {
+        if (currentUser.getRole() != Role.ADMIN) {
 
-            throw new ForbiddenException(
-                    ErrorMessages.FORBIDDEN_ACCESS
-            );
+            if (user.getCreatedBy() == null ||
+                    !user.getCreatedBy().getId().equals(currentUser.getId())) {
+
+                throw new ForbiddenException(
+                        ErrorMessages.FORBIDDEN_ACCESS
+                );
+            }
         }
 
         return UserMapper.toResponse(user);
@@ -110,6 +114,10 @@ public class UserServiceImpl implements UserService {
 
         User currentUser = getCurrentUser();
         User user = findUserById(id);
+
+        if (userRepository.existsByEmailAndIdNot(req.getEmail(), id)) {
+            throw new ConflictException(ErrorMessages.EMAIL_ALREADY_EXISTS);
+        }
 
         if (currentUser.getRole() != Role.ADMIN &&
                 !user.getCreatedBy().getId()
@@ -126,6 +134,45 @@ public class UserServiceImpl implements UserService {
 
         log.info(
                 "Usuario actualizado correctamente con id: {}",
+                updatedUser.getId()
+        );
+
+        return UserMapper.toResponse(updatedUser);
+    }
+
+    @Override
+    public UserResponse updateUserByCoordinator(Long id, CoordinatorUpdateUserRequest req) {
+
+        User currentUser = getCurrentUser();
+        User user = findUserById(id);
+
+        validateOwnership(currentUser, user);
+
+        if (userRepository.existsByDniAndIdNot(req.getDni(), id)) {
+            throw new ConflictException(ErrorMessages.DNI_ALREADY_EXISTS);
+        }
+
+        user.setDni(req.getDni());
+
+        if (req.getRole() == Role.ADMIN) {
+            throw new ForbiddenException(
+                    ErrorMessages.ADMIN_ASSIGNMENT_NOT_ALLOWED
+            );
+        }
+
+        user.setRole(req.getRole());
+
+        user.setUsername(
+                generateUsername(
+                        req.getRole(),
+                        req.getDni()
+                )
+        );
+
+        User updatedUser = userRepository.save(user);
+
+        log.info(
+                "Usuario actualizado por coordinador correctamente con id: {}",
                 updatedUser.getId()
         );
 
@@ -213,7 +260,9 @@ public class UserServiceImpl implements UserService {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if (auth == null || !auth.isAuthenticated()) {
+        if (auth == null ||
+                !auth.isAuthenticated() ||
+                !(auth.getPrincipal() instanceof UserDetails)) {
             throw new UnauthorizedException(ErrorMessages.UNAUTHORIZED_ACCESS);
         }
 
@@ -237,6 +286,16 @@ public class UserServiceImpl implements UserService {
 
         if (!req.getNewPassword().equals(req.getConfirmPassword())) {
             throw new ConflictException(ErrorMessages.PASSWORDS_DO_NOT_MATCH);
+        }
+    }
+
+    private void validateOwnership(User currentuser, User targetuser) {
+        if (targetuser.getCreatedBy() == null ||
+            !targetuser.getCreatedBy().getId().equals(currentuser.getId())) {
+
+            throw new ForbiddenException(
+                    ErrorMessages.FORBIDDEN_ACCESS
+            );
         }
     }
 }

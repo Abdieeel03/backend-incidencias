@@ -19,11 +19,4 @@ public class UpdateUserRequest {
     @NotBlank
     @Size(max = 100)
     private String name;
-
-    @NotBlank
-    @Pattern(regexp = "\\d{8}", message = "El DNI debe tener 8 dígitos")
-    private String dni;
-
-    @NotNull
-    private Role role;
 }

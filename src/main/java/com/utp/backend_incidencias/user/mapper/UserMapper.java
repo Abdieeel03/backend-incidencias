@@ -1,6 +1,5 @@
 package com.utp.backend_incidencias.user.mapper;
 
-import com.utp.backend_incidencias.user.dto.request.ChangePasswordRequest;
 import com.utp.backend_incidencias.user.dto.request.CreateUserRequest;
 import com.utp.backend_incidencias.user.dto.request.UpdateUserRequest;
 import com.utp.backend_incidencias.user.dto.response.UserResponse;

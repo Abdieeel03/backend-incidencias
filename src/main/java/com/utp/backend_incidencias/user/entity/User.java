@@ -42,7 +42,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Role role;
 
-    @ManyToOne
+    @ManyToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "created_by_id")
     private User createdBy;
 
