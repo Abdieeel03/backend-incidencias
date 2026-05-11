@@ -30,6 +30,10 @@ public class Student extends BaseEntity {
     @Column(name = "student_code", nullable = false, unique = true, length = 10)
     private String studentCode;
 
+    @Column(nullable = false)
+    @Builder.Default
+    protected Boolean isDeleted = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id", nullable = false)
     private User parent;

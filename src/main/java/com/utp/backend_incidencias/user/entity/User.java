@@ -34,6 +34,10 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    @Builder.Default
+    protected Boolean isDeleted = false;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;

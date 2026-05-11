@@ -21,6 +21,10 @@ public class SchoolClass extends BaseEntity {
     @Column(length = 100, nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    @Builder.Default
+    protected Boolean isDeleted = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id", nullable = false)
     private User teacher;
