@@ -43,8 +43,6 @@ public class UserMapper {
     public static void updateEntity(User user, UpdateUserRequest req){
         user.setEmail(req.getEmail());
         user.setName(req.getName());
-        user.setDni(req.getDni());
-        user.setRole(req.getRole());
     }
 
 }
