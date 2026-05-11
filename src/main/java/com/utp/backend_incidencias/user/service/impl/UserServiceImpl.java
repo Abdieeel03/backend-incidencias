@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse createUser(CreateUserRequest req) {
         validateUserData(req);
 
+        User currentUser = getCurrentUser();
         User user = UserMapper.toEntity(req);
 
         user.setUsername(
@@ -45,7 +46,7 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(passwordEncoder.encode(req.getPassword()));
 
-        user.setCreatedBy(null); // TODO: agregar usuario que crea
+        user.setCreatedBy(currentUser);
 
         User savedUser = userRepository.save(user);
 
