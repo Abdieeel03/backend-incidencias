@@ -4,6 +4,7 @@ import com.utp.backend_incidencias.common.constants.ErrorMessages;
 import com.utp.backend_incidencias.common.exception.ConflictException;
 import com.utp.backend_incidencias.common.exception.ForbiddenException;
 import com.utp.backend_incidencias.common.exception.ResourceNotFoundException;
+import com.utp.backend_incidencias.common.exception.UnauthorizedException;
 import com.utp.backend_incidencias.user.dto.request.ChangePasswordRequest;
 import com.utp.backend_incidencias.user.dto.request.CreateUserRequest;
 import com.utp.backend_incidencias.user.dto.request.UpdateUserRequest;
@@ -15,6 +16,7 @@ import com.utp.backend_incidencias.user.repository.UserRepository;
 import com.utp.backend_incidencias.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -209,11 +211,13 @@ public class UserServiceImpl implements UserService {
 
     private User getCurrentUser() {
 
-        String username = Objects.requireNonNull(SecurityContextHolder
-                        .getContext()
-                        .getAuthentication())
-                .getName();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
+        if (auth == null || !auth.isAuthenticated()) {
+            throw new UnauthorizedException(ErrorMessages.UNAUTHORIZED_ACCESS);
+        }
+
+        String username = auth.getName();
         log.info("Getting users by username: {}", username);
 
         return userRepository
