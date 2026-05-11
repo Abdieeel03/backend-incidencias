@@ -33,11 +33,14 @@ public class ErrorMessages {
             "La contraseña actual es incorrecta";
 
     public static final String INVALID_ROLE =
-            "Rol inválido para generacion de username";
+            "Rol inválido para generación de username";
 
     public static final String FORBIDDEN_ACCESS =
             "Acceso denegado: no tienes permisos para realizar esta acción";
 
     public static final String UNAUTHORIZED_ACCESS =
             "Acceso no autorizado. Por favor inicia sesión nuevamente";
+
+    public static final String ADMIN_ASSIGNMENT_NOT_ALLOWED =
+            "Asignación no permitida. No puedes asignar rol: ADMIN";
 }
