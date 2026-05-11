@@ -122,12 +122,10 @@ public class UserController {
     @PreAuthorize("isAuthenticated()")
     @PatchMapping("/me/change-password")
     public ResponseEntity<ApiResponse<Void>> changePassword(
-            @AuthenticationPrincipal UserDetails userDetails,
             @Valid @RequestBody ChangePasswordRequest request
     ) {
 
         userService.changePassword(
-                userDetails.getUsername(),
                 request
         );
 

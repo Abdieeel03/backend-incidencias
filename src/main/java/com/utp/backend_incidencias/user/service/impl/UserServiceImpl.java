@@ -155,28 +155,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changePassword(String username, ChangePasswordRequest req) {
+    public void changePassword(ChangePasswordRequest req) {
 
-        User user = userRepository
-                .findByUsernameAndIsDeletedFalse(username)
-                        .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.USER_NOT_FOUND));
+        User user = getCurrentUser();
 
-        if (!passwordEncoder.matches(
-                req.getCurrentPassword(),
-                user.getPassword()
-        )) {
-
-            throw new ConflictException(
-                    ErrorMessages.CURRENT_PASSWORD_INCORRECT
-            );
-        }
-
-        if (!req.getNewPassword().equals(req.getConfirmPassword())) {
-
-            throw new ConflictException(
-                    ErrorMessages.PASSWORDS_DO_NOT_MATCH
-            );
-        }
+        validatePasswordChange(req, user);
 
         user.setPassword(
                 passwordEncoder.encode(req.getNewPassword())
@@ -239,5 +222,16 @@ public class UserServiceImpl implements UserService {
                                 ErrorMessages.USER_NOT_FOUND
                         )
                 );
+    }
+
+    private void validatePasswordChange(ChangePasswordRequest req, User user) {
+
+        if (!passwordEncoder.matches(req.getCurrentPassword(), user.getPassword())) {
+            throw new ConflictException(ErrorMessages.CURRENT_PASSWORD_INCORRECT);
+        }
+
+        if (!req.getNewPassword().equals(req.getConfirmPassword())) {
+            throw new ConflictException(ErrorMessages.PASSWORDS_DO_NOT_MATCH);
+        }
     }
 }
