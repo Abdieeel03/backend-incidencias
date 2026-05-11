@@ -23,6 +23,9 @@ public class ErrorMessages {
     public static final String DNI_ALREADY_EXISTS =
             "El DNI ya está registrado";
 
+    public static final String USERNAME_ALREADY_EXISTS =
+            "El username ya está registrado";
+
     public static final String INVALID_CREDENTIALS =
             "Credenciales inválidas";
 
