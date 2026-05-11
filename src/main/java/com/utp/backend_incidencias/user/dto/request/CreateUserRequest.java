@@ -25,7 +25,7 @@ public class CreateUserRequest {
     private String dni;
 
     @NotBlank
-    @Size(min = 6,max = 100)
+    @Size(min = 8, max = 100)
     private String password;
 
     @NotNull
