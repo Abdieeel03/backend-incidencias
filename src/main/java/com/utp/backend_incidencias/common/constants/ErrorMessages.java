@@ -8,11 +8,20 @@ public class ErrorMessages {
     public static final String USER_NOT_FOUND =
             "Usuario no encontrado";
 
+    public static final String USER_ALREADY_ACTIVE =
+            "El usuario ya se encuentra activo";
+
     public static final String STUDENT_NOT_FOUND =
             "Estudiante no encontrado";
 
+    public static final String STUDENT_ALREADY_ACTIVE =
+            "El estudiante ya se encuentra activo";
+
     public static final String CLASS_NOT_FOUND =
             "Clase no encontrada";
+
+    public static final String CLASS_ALREADY_ACTIVE =
+            "La clase ya se encuentra activo";
 
     public static final String INCIDENT_NOT_FOUND =
             "Incidente no encontrado";
@@ -46,4 +55,10 @@ public class ErrorMessages {
 
     public static final String ADMIN_ASSIGNMENT_NOT_ALLOWED =
             "Asignación no permitida. No puedes asignar rol: ADMIN";
+
+    public static final String USER_ROLE_NOT_PADRE =
+            "El usuario seleccionado no es un padre";
+
+    public static final String USER_ROLE_NOT_PROFESOR =
+            "El usuario seleccionado no es un profesor";
 }

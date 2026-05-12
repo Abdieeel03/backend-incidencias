@@ -29,9 +29,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByDniAndIdNot(String dni, Long id);
 
-    List<User> findByRole(Role role);
+    List<User> findAllByRole(Role role);
 
-    List<User> findByIsDeletedFalse();
+    List<User> findAllByIsDeletedFalse();
 
-    List<User> findByCreatedByAndIsDeletedFalse(User createdBy);
+    List<User> findAllByIsDeletedTrue();
+
+    List<User> findAllByCreatedByAndIsDeletedFalse(User createdBy);
+
+    List<User> findAllByCreatedByAndIsDeletedTrue(User createdBy);
 }

@@ -4,7 +4,9 @@ import com.utp.backend_incidencias.common.constants.ErrorMessages;
 import com.utp.backend_incidencias.common.exception.ConflictException;
 import com.utp.backend_incidencias.common.exception.ForbiddenException;
 import com.utp.backend_incidencias.common.exception.ResourceNotFoundException;
-import com.utp.backend_incidencias.common.exception.UnauthorizedException;
+import com.utp.backend_incidencias.common.helper.CodeGenerationHelper;
+import com.utp.backend_incidencias.security.service.OwnershipService;
+import com.utp.backend_incidencias.security.service.SecurityService;
 import com.utp.backend_incidencias.user.dto.request.ChangePasswordRequest;
 import com.utp.backend_incidencias.user.dto.request.CoordinatorUpdateUserRequest;
 import com.utp.backend_incidencias.user.dto.request.CreateUserRequest;
@@ -17,9 +19,6 @@ import com.utp.backend_incidencias.user.repository.UserRepository;
 import com.utp.backend_incidencias.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,16 +32,19 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SecurityService securityService;
+    private final OwnershipService ownershipService;
+    private final CodeGenerationHelper codeGenerationHelper;
 
     @Override
     public UserResponse createUser(CreateUserRequest req) {
         validateUserData(req);
 
-        User currentUser = getCurrentUser();
+        User currentUser = securityService.getCurrentUser();
         User user = UserMapper.toEntity(req);
 
         user.setUsername(
-                generateUsername(
+                codeGenerationHelper.generateUsername(
                         req.getRole(),
                         req.getDni()
                 )
@@ -64,26 +66,46 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponse> getAllUsers() {
-        return userRepository.findByIsDeletedFalse()
-                .stream()
-                .map(UserMapper::toResponse)
-                .toList();
+        return getUsersByCurrentUser();
     }
 
     @Override
     public List<UserResponse> getUsersByCurrentUser() {
 
-        User currentUser = getCurrentUser();
+        User currentUser = securityService.getCurrentUser();
 
         if (currentUser.getRole().equals(Role.ADMIN)) {
-            return userRepository.findByIsDeletedFalse()
+            return userRepository.findAllByIsDeletedFalse()
                     .stream()
                     .filter(u -> !Objects.equals(u.getUsername(), currentUser.getUsername()))
                     .map(UserMapper::toResponse)
                     .toList();
         }
 
-        return userRepository.findByCreatedByAndIsDeletedFalse(currentUser)
+        return userRepository
+                .findAllByCreatedByAndIsDeletedFalse(currentUser)
+                .stream()
+                .map(UserMapper::toResponse)
+                .toList();
+    }
+
+    @Override
+    public List<UserResponse> getDeletedUsers() {
+        User currentUser = securityService.getCurrentUser();
+
+        if (currentUser.getRole() == Role.ADMIN) {
+
+            return userRepository.findAllByIsDeletedTrue()
+                    .stream()
+                    .filter(user ->
+                            !user.getId().equals(currentUser.getId())
+                    )
+                    .map(UserMapper::toResponse)
+                    .toList();
+        }
+
+        return userRepository
+                .findAllByCreatedByAndIsDeletedTrue(currentUser)
                 .stream()
                 .map(UserMapper::toResponse)
                 .toList();
@@ -92,19 +114,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getUserById(Long id) {
 
-        User currentUser = getCurrentUser();
         User user = findUserById(id);
 
-        if (currentUser.getRole() != Role.ADMIN) {
-
-            if (user.getCreatedBy() == null ||
-                    !user.getCreatedBy().getId().equals(currentUser.getId())) {
-
-                throw new ForbiddenException(
-                        ErrorMessages.FORBIDDEN_ACCESS
-                );
-            }
-        }
+        ownershipService.validateUserOwnership(user); //TODO: Verificar si el usuario buscado no es el mismo para que no de error por null
 
         return UserMapper.toResponse(user);
     }
@@ -112,21 +124,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse updateUser(Long id, UpdateUserRequest req) {
 
-        User currentUser = getCurrentUser();
         User user = findUserById(id);
 
         if (userRepository.existsByEmailAndIdNot(req.getEmail(), id)) {
             throw new ConflictException(ErrorMessages.EMAIL_ALREADY_EXISTS);
         }
 
-        if (currentUser.getRole() != Role.ADMIN &&
-                !user.getCreatedBy().getId()
-                        .equals(currentUser.getId())) {
-
-            throw new ForbiddenException(
-                    ErrorMessages.FORBIDDEN_ACCESS
-            );
-        }
+        ownershipService.validateUserOwnership(user);
 
         UserMapper.updateEntity(user, req);
 
@@ -143,10 +147,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse updateUserByCoordinator(Long id, CoordinatorUpdateUserRequest req) {
 
-        User currentUser = getCurrentUser();
         User user = findUserById(id);
 
-        validateOwnership(currentUser, user);
+        ownershipService.validateUserOwnership(user);
 
         if (userRepository.existsByDniAndIdNot(req.getDni(), id)) {
             throw new ConflictException(ErrorMessages.DNI_ALREADY_EXISTS);
@@ -163,7 +166,7 @@ public class UserServiceImpl implements UserService {
         user.setRole(req.getRole());
 
         user.setUsername(
-                generateUsername(
+                codeGenerationHelper.generateUsername(
                         req.getRole(),
                         req.getDni()
                 )
@@ -182,17 +185,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
 
-        User currentUser = getCurrentUser();
         User user = findUserById(id);
 
-        if (currentUser.getRole() != Role.ADMIN &&
-                !user.getCreatedBy().getId()
-                        .equals(currentUser.getId())) {
-
-            throw new ForbiddenException(
-                    ErrorMessages.FORBIDDEN_ACCESS
-            );
-        }
+        ownershipService.validateUserOwnership(user);
 
         user.setIsDeleted(true);
 
@@ -207,7 +202,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void changePassword(ChangePasswordRequest req) {
 
-        User user = getCurrentUser();
+        User user = securityService.getCurrentUser();
 
         validatePasswordChange(req, user);
 
@@ -219,6 +214,33 @@ public class UserServiceImpl implements UserService {
 
         log.info(
                 "Contraseña cambiada correctamente para el usuario con id: {}",
+                user.getId()
+        );
+    }
+
+    @Override
+    public void restoreUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                ErrorMessages.USER_NOT_FOUND
+                        )
+                );
+
+        ownershipService.validateUserOwnership(user);
+
+        if (!user.getIsDeleted()) {
+            throw new ConflictException(
+                    ErrorMessages.USER_ALREADY_ACTIVE
+            );
+        }
+
+        user.setIsDeleted(false);
+
+        userRepository.save(user);
+
+        log.info(
+                "Usuario restaurado correctamente con id: {}",
                 user.getId()
         );
     }
@@ -244,40 +266,6 @@ public class UserServiceImpl implements UserService {
                 );
     }
 
-    private String generateUsername(Role role, String dni) {
-        String prefix = switch (role) {
-            case ADMIN -> "A";
-            case COORDINADOR -> "C";
-            case PROFESOR -> "D";
-            case PADRE -> "P";
-
-            default -> throw new IllegalArgumentException(ErrorMessages.INVALID_ROLE);
-        };
-        return prefix + dni;
-    }
-
-    private User getCurrentUser() {
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth == null ||
-                !auth.isAuthenticated() ||
-                !(auth.getPrincipal() instanceof UserDetails)) {
-            throw new UnauthorizedException(ErrorMessages.UNAUTHORIZED_ACCESS);
-        }
-
-        String username = auth.getName();
-        log.info("Getting users by username: {}", username);
-
-        return userRepository
-                .findByUsernameAndIsDeletedFalse(username)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                ErrorMessages.USER_NOT_FOUND
-                        )
-                );
-    }
-
     private void validatePasswordChange(ChangePasswordRequest req, User user) {
 
         if (!passwordEncoder.matches(req.getCurrentPassword(), user.getPassword())) {
@@ -286,16 +274,6 @@ public class UserServiceImpl implements UserService {
 
         if (!req.getNewPassword().equals(req.getConfirmPassword())) {
             throw new ConflictException(ErrorMessages.PASSWORDS_DO_NOT_MATCH);
-        }
-    }
-
-    private void validateOwnership(User currentuser, User targetuser) {
-        if (targetuser.getCreatedBy() == null ||
-            !targetuser.getCreatedBy().getId().equals(currentuser.getId())) {
-
-            throw new ForbiddenException(
-                    ErrorMessages.FORBIDDEN_ACCESS
-            );
         }
     }
 }

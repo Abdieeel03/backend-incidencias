@@ -30,6 +30,12 @@ public class SuccessMessages {
     public static final String PASSWORD_UPDATED =
             "Contraseña actualizada correctamente";
 
+    public static final String DELETED_USERS_FOUND =
+            "Usuarios eliminados encontrados correctamente";
+
+    public static final String USER_RESTORED =
+            "Usuario recuperado correctamente";
+
     // STUDENT
     public static final String STUDENT_CREATED =
             "Estudiante creado correctamente";
@@ -46,6 +52,12 @@ public class SuccessMessages {
     public static final String STUDENT_DELETED =
             "Estudiante eliminado correctamente";
 
+    public static final String DELETED_STUDENTS_FOUND =
+            "Estudiantes eliminados encontrados correctamente";
+
+    public static final String STUDENT_RESTORED =
+            "Estudiante recuperado correctamente";
+
     // SCHOOL CLASS
     public static final String CLASS_CREATED =
             "Clase creada correctamente";
@@ -61,6 +73,12 @@ public class SuccessMessages {
 
     public static final String CLASS_DELETED =
             "Clase eliminada correctamente";
+
+    public static final String DELETED_CLASSES_RETRIEVED =
+            "Clases eliminadas obtenidas correctamente";
+
+    public static final String CLASS_RESTORED =
+            "Clase restaurada correctamente";
 
     // INCIDENT
     public static final String INCIDENT_CREATED =

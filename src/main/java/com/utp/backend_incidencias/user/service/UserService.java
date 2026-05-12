@@ -16,15 +16,19 @@ public interface UserService {
 
     List<UserResponse> getUsersByCurrentUser();
 
+    List<UserResponse> getDeletedUsers();
+
     UserResponse getUserById(Long id);
 
     UserResponse updateUser(Long id, UpdateUserRequest req);
 
-    UserResponse updateUserByCoordinator(Long id, CoordinatorUpdateUserRequest req);
+    UserResponse updateUserByCoordinator(Long id, CoordinatorUpdateUserRequest req); // TODO: implementar en controlador
 
     void deleteUser(Long id);
 
     void changePassword(
             ChangePasswordRequest req
     );
+
+    void restoreUser(Long id);
 }

@@ -29,6 +29,10 @@ public class SchoolClass extends BaseEntity {
     @JoinColumn(name = "teacher_id", nullable = false)
     private User teacher;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
     @ManyToMany
     @JoinTable(
             name = "student_classes",
