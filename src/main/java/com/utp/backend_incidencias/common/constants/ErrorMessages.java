@@ -8,8 +8,14 @@ public class ErrorMessages {
     public static final String USER_NOT_FOUND =
             "Usuario no encontrado";
 
+    public static final String USER_ALREADY_ACTIVE =
+            "El usuario ya se encuentra activo";
+
     public static final String STUDENT_NOT_FOUND =
             "Estudiante no encontrado";
+
+    public static final String STUDENT_ALREADY_ACTIVE =
+            "El estudiante ya se encuentra activo";
 
     public static final String CLASS_NOT_FOUND =
             "Clase no encontrada";

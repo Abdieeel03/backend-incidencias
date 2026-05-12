@@ -14,9 +14,15 @@ public interface StudentService {
 
     List<StudentResponse> getAllStudents();
 
+    List<StudentResponse> getDeletedStudents();
+
+    List<StudentResponse> getStudentsByParentId(Long parentId);
+
     List<StudentResponse> searchStudents(String query);
 
     StudentResponse updateStudent(Long id, UpdateStudentRequest req);
 
     void deleteStudent(Long id);
+
+    void restoreStudent(Long id);
 }

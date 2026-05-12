@@ -105,6 +105,59 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public List<StudentResponse> getDeletedStudents() {
+
+        User currentUser = securityService.getCurrentUser();
+
+        if (currentUser.getRole() == Role.ADMIN) {
+
+            return studentRepository.findAllByIsDeletedTrue()
+                    .stream()
+                    .map(StudentMapper::toResponse)
+                    .toList();
+        }
+
+        return studentRepository
+                .findAllByCreatedByAndIsDeletedTrue(currentUser)
+                .stream()
+                .map(StudentMapper::toResponse)
+                .toList();
+    }
+
+    @Override
+    public List<StudentResponse> getStudentsByParentId(Long parentId) {
+
+        User currentUser = securityService.getCurrentUser();
+
+        if (currentUser.getRole() == Role.PADRE) {
+
+            return studentRepository
+                    .findAllByParentAndIsDeletedFalse(currentUser)
+                    .stream()
+                    .map(StudentMapper::toResponse)
+                    .toList();
+        }
+
+        User parent = userRepository
+                .findByIdAndIsDeletedFalse(parentId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                ErrorMessages.USER_NOT_FOUND
+                        )
+                );
+
+        ownershipService.validateUserOwnership(parent);
+
+        verifyRolePadre(parent.getRole());
+
+        return studentRepository
+                .findAllByParentAndIsDeletedFalse(parent)
+                .stream()
+                .map(StudentMapper::toResponse)
+                .toList();
+    }
+
+    @Override
     public List<StudentResponse> searchStudents(String query) {
         User currentUser = securityService.getCurrentUser();
 
@@ -180,6 +233,34 @@ public class StudentServiceImpl implements StudentService {
 
         log.info(
                 "Estudiante eliminado correctamente con id: {}",
+                student.getId()
+        );
+    }
+
+    @Override
+    public void restoreStudent(Long id) {
+
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                ErrorMessages.STUDENT_NOT_FOUND
+                        )
+                );
+
+        ownershipService.validateStudentOwnership(student);
+
+        if (!student.getIsDeleted()) {
+            throw new ConflictException(
+                    ErrorMessages.STUDENT_ALREADY_ACTIVE
+            );
+        }
+
+        student.setIsDeleted(false);
+
+        studentRepository.save(student);
+
+        log.info(
+                "Estudiante restaurado correctamente con id: {}",
                 student.getId()
         );
     }

@@ -16,6 +16,8 @@ public interface UserService {
 
     List<UserResponse> getUsersByCurrentUser();
 
+    List<UserResponse> getDeletedUsers();
+
     UserResponse getUserById(Long id);
 
     UserResponse updateUser(Long id, UpdateUserRequest req);
@@ -27,4 +29,6 @@ public interface UserService {
     void changePassword(
             ChangePasswordRequest req
     );
+
+    void restoreUser(Long id);
 }

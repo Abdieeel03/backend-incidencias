@@ -90,6 +90,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserResponse> getDeletedUsers() {
+        User currentUser = securityService.getCurrentUser();
+
+        if (currentUser.getRole() == Role.ADMIN) {
+
+            return userRepository.findAllByIsDeletedTrue()
+                    .stream()
+                    .filter(user ->
+                            !user.getId().equals(currentUser.getId())
+                    )
+                    .map(UserMapper::toResponse)
+                    .toList();
+        }
+
+        return userRepository
+                .findAllByCreatedByAndIsDeletedTrue(currentUser)
+                .stream()
+                .map(UserMapper::toResponse)
+                .toList();
+    }
+
+    @Override
     public UserResponse getUserById(Long id) {
 
         User user = findUserById(id);
@@ -192,6 +214,33 @@ public class UserServiceImpl implements UserService {
 
         log.info(
                 "Contraseña cambiada correctamente para el usuario con id: {}",
+                user.getId()
+        );
+    }
+
+    @Override
+    public void restoreUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                ErrorMessages.USER_NOT_FOUND
+                        )
+                );
+
+        ownershipService.validateUserOwnership(user);
+
+        if (!user.getIsDeleted()) {
+            throw new ConflictException(
+                    ErrorMessages.USER_ALREADY_ACTIVE
+            );
+        }
+
+        user.setIsDeleted(false);
+
+        userRepository.save(user);
+
+        log.info(
+                "Usuario restaurado correctamente con id: {}",
                 user.getId()
         );
     }

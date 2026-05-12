@@ -14,9 +14,15 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     List<Student> findAllByIsDeletedFalse();
 
+    List<Student> findAllByIsDeletedTrue();
+
     List<Student> findAllByCreatedByAndIsDeletedFalse(User createdBy);
 
+    List<Student> findAllByCreatedByAndIsDeletedTrue(User createdBy);
+
     List<Student> findAllByParentIdAndIsDeletedFalse(Long parentId);
+
+    List<Student> findAllByParentAndIsDeletedFalse(User parent);
 
     @Query("""
         SELECT s
