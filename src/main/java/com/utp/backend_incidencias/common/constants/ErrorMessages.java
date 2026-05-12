@@ -46,4 +46,7 @@ public class ErrorMessages {
 
     public static final String ADMIN_ASSIGNMENT_NOT_ALLOWED =
             "Asignación no permitida. No puedes asignar rol: ADMIN";
+
+    public static final String USER_ROLE_NOT_PADRE =
+            "El usuario seleccionado no es un padre";
 }
