@@ -22,7 +22,6 @@ import java.util.List;
 public class StudentController {
 
     private final StudentService studentService;
-    private final RestClient.Builder builder;
 
     @PreAuthorize(
             "hasRole('ADMIN') or hasRole('COORDINADOR')"

@@ -38,6 +38,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     """)
     List<Student> searchStudents(String query);
 
+    List<Student> findByIdInAndCreatedByAndIsDeletedFalse(List<Long> ids, User createdBy);
+
     boolean existsByDni(String dni);
 
     boolean existsByDniAndIdNot(String dni, Long id);

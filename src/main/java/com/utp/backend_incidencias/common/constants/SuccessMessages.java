@@ -74,6 +74,12 @@ public class SuccessMessages {
     public static final String CLASS_DELETED =
             "Clase eliminada correctamente";
 
+    public static final String DELETED_CLASSES_RETRIEVED =
+            "Clases eliminadas obtenidas correctamente";
+
+    public static final String CLASS_RESTORED =
+            "Clase restaurada correctamente";
+
     // INCIDENT
     public static final String INCIDENT_CREATED =
             "Incidente creado correctamente";
