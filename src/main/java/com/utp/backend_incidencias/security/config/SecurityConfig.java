@@ -1,5 +1,6 @@
 package com.utp.backend_incidencias.security.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.utp.backend_incidencias.common.constants.ErrorMessages;
 import com.utp.backend_incidencias.common.response.ErrorResponse;
 import com.utp.backend_incidencias.security.jwt.JwtAuthenticationFilter;
@@ -23,7 +24,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,6 +31,8 @@ import java.util.List;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final ObjectMapper objectMapper;
 
     @Value("${app.cors.allowed-origins}")
     private List<String> allowedOrigins;
@@ -115,7 +117,7 @@ public class SecurityConfig {
 
             response.setContentType("application/json");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().write(new ObjectMapper().writeValueAsString(error));
+            response.getWriter().write(objectMapper.writeValueAsString(error));
         };
     }
 
@@ -134,7 +136,7 @@ public class SecurityConfig {
 
             response.setContentType("application/json");
             response.setStatus(HttpStatus.FORBIDDEN.value());
-            response.getWriter().write(new ObjectMapper().writeValueAsString(error));
+            response.getWriter().write(objectMapper.writeValueAsString(error));
         };
     }
 }
