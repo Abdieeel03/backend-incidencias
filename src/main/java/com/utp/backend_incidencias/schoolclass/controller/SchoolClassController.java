@@ -113,7 +113,7 @@ public class SchoolClassController {
         return ResponseEntity.ok(
                 ApiResponse.<List<StudentResponse>>builder()
                         .success(true)
-                        .message("Students retrieved successfully")
+                        .message(SuccessMessages.STUDENTS_RETRIEVED)
                         .data(res)
                         .build()
         );
