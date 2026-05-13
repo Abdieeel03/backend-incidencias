@@ -3,6 +3,7 @@ package com.utp.backend_incidencias.security.service;
 import com.utp.backend_incidencias.common.constants.ErrorMessages;
 import com.utp.backend_incidencias.common.exception.ForbiddenException;
 import com.utp.backend_incidencias.common.exception.UnauthorizedException;
+import com.utp.backend_incidencias.incident.entity.Incident;
 import com.utp.backend_incidencias.schoolclass.entity.SchoolClass;
 import com.utp.backend_incidencias.student.entity.Student;
 import com.utp.backend_incidencias.user.entity.User;
@@ -179,6 +180,87 @@ public class OwnershipService {
         throw new ForbiddenException(
                 ErrorMessages.FORBIDDEN_ACCESS
         );
+    }
+
+    public void validateIncidentAccess(Incident incident) {
+
+        User currentUser = securityService.getCurrentUser();
+
+        if (currentUser.getRole() == Role.ADMIN) {
+            return;
+        }
+
+        if (currentUser.getRole() == Role.COORDINADOR) {
+
+            validateCoordinatorIncidentAccess(incident);
+            return;
+        }
+
+        if (currentUser.getRole() == Role.PROFESOR) {
+
+            validateTeacherIncidentAccess(incident);
+            return;
+        }
+
+        if (currentUser.getRole() == Role.PADRE) {
+
+            validateParentIncidentAccess(incident);
+            return;
+        }
+
+        throw new ForbiddenException(
+                ErrorMessages.FORBIDDEN_ACCESS
+        );
+    }
+
+    public void validateCoordinatorIncidentAccess(Incident incident) {
+
+        User currentUser = securityService.getCurrentUser();
+
+        User teacher = incident.getTeacher();
+
+        if (teacher == null ||
+                teacher.getCreatedBy() == null ||
+                !teacher.getCreatedBy()
+                        .getId()
+                        .equals(currentUser.getId())) {
+
+            throw new ForbiddenException(
+                    ErrorMessages.FORBIDDEN_ACCESS
+            );
+        }
+    }
+
+    public void validateTeacherIncidentAccess(Incident incident) {
+
+        User currentUser = securityService.getCurrentUser();
+
+        if (incident.getTeacher() == null ||
+                !incident.getTeacher()
+                        .getId()
+                        .equals(currentUser.getId())) {
+
+            throw new ForbiddenException(
+                    ErrorMessages.FORBIDDEN_ACCESS
+            );
+        }
+    }
+
+    public void validateParentIncidentAccess(Incident incident) {
+
+        User currentUser = securityService.getCurrentUser();
+
+        if (incident.getStudent() == null ||
+                incident.getStudent().getParent() == null ||
+                !incident.getStudent()
+                        .getParent()
+                        .getId()
+                        .equals(currentUser.getId())) {
+
+            throw new ForbiddenException(
+                    ErrorMessages.FORBIDDEN_ACCESS
+            );
+        }
     }
 
 

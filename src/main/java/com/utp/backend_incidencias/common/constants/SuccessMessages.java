@@ -101,4 +101,10 @@ public class SuccessMessages {
 
     public static final String INCIDENT_MARKED_AS_READ =
             "Incidente marcado como leído correctamente";
+
+    public static final String DELETED_INCIDENTS_RETRIEVED =
+            "Incidentes eliminados obtenidos correctamente";
+
+    public static final String INCIDENT_RESTORED =
+            "Incidente restaurado correctamente";
 }

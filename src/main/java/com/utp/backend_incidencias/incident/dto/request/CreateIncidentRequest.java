@@ -22,7 +22,4 @@ public class CreateIncidentRequest {
 
     @NotNull
     private Long classId;
-
-    @NotNull
-    private Long teacherId;
 }

@@ -61,4 +61,7 @@ public class ErrorMessages {
 
     public static final String USER_ROLE_NOT_PROFESOR =
             "El usuario seleccionado no es un profesor";
+
+    public static final String STUDENT_NOT_IN_CLASS =
+            "El estudiante no esta en esta clase";
 }
