@@ -22,6 +22,9 @@ public class User extends BaseEntity {
     @Column(nullable = false, unique = true, length = 10)
     private String username;
 
+    @Column(nullable = false, unique = true, length = 150)
+    private String email;
+
     @Column(nullable = false, length = 100)
     private String name;
 
@@ -31,9 +34,17 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    @Builder.Default
+    protected Boolean isDeleted = false;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @ManyToOne(fetch =  FetchType.LAZY)
+    @JoinColumn(name = "created_by_id")
+    private User createdBy;
 
     @OneToMany(mappedBy = "parent")
     private List<Student> students;

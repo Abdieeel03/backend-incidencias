@@ -27,12 +27,20 @@ public class Student extends BaseEntity {
     @Column(nullable = false, unique = true, length = 8)
     private String dni;
 
-    @Column(name = "student_code", nullable = false, unique = true, length = 10)
+    @Column(name = "student_code", unique = true, nullable = false, length = 10)
     private String studentCode;
+
+    @Column(nullable = false)
+    @Builder.Default
+    protected Boolean isDeleted = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id", nullable = false)
     private User parent;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", nullable = false, updatable = false)
+    private User createdBy;
 
     @ManyToMany(mappedBy = "students")
     private List<SchoolClass> classes;
