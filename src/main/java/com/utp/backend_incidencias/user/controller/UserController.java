@@ -4,6 +4,7 @@ import com.utp.backend_incidencias.common.constants.SuccessMessages;
 import com.utp.backend_incidencias.common.response.ApiResponse;
 import com.utp.backend_incidencias.student.dto.response.StudentResponse;
 import com.utp.backend_incidencias.user.dto.request.ChangePasswordRequest;
+import com.utp.backend_incidencias.user.dto.request.CoordinatorUpdateUserRequest;
 import com.utp.backend_incidencias.user.dto.request.CreateUserRequest;
 import com.utp.backend_incidencias.user.dto.request.UpdateUserRequest;
 import com.utp.backend_incidencias.user.dto.response.UserResponse;
@@ -185,6 +186,25 @@ public class UserController {
                         .success(true)
                         .message(SuccessMessages.USER_UPDATED)
                         .data(updatedUser)
+                        .build()
+        );
+    }
+
+    @PreAuthorize("hasRole('COORDINADOR')")
+    @PutMapping("/coordinator/{id}")
+    public ResponseEntity<ApiResponse<UserResponse>> updateUserByCoordinator(
+            @PathVariable Long id,
+            @Valid @RequestBody CoordinatorUpdateUserRequest req
+    ) {
+
+        UserResponse res =
+                userService.updateUserByCoordinator(id, req);
+
+        return ResponseEntity.ok(
+                ApiResponse.<UserResponse>builder()
+                        .success(true)
+                        .message(SuccessMessages.USER_UPDATED)
+                        .data(res)
                         .build()
         );
     }

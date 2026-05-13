@@ -27,7 +27,7 @@ public interface UserService {
 
     UserResponse updateUser(Long id, UpdateUserRequest req);
 
-    UserResponse updateUserByCoordinator(Long id, CoordinatorUpdateUserRequest req); // TODO: implementar en controlador
+    UserResponse updateUserByCoordinator(Long id, CoordinatorUpdateUserRequest req);
 
     void deleteUser(Long id);
 
