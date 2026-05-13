@@ -92,7 +92,7 @@ public class UserController {
         return ResponseEntity.ok(
                 ApiResponse.<List<UserResponse>>builder()
                         .success(true)
-                        .message(SuccessMessages.USERS_RETRIEVED)
+                        .message(SuccessMessages.TEACHERS_RETRIEVED)
                         .data(res)
                         .build()
         );
@@ -109,7 +109,7 @@ public class UserController {
         return ResponseEntity.ok(
                 ApiResponse.<List<UserResponse>>builder()
                         .success(true)
-                        .message(SuccessMessages.USERS_RETRIEVED)
+                        .message(SuccessMessages.DELETED_TEACHERS_RETRIEVED)
                         .data(res)
                         .build()
         );
@@ -126,7 +126,7 @@ public class UserController {
         return ResponseEntity.ok(
                 ApiResponse.<List<UserResponse>>builder()
                         .success(true)
-                        .message(SuccessMessages.USERS_RETRIEVED)
+                        .message(SuccessMessages.PARENTS_RETRIEVED)
                         .data(res)
                         .build()
         );
@@ -143,7 +143,7 @@ public class UserController {
         return ResponseEntity.ok(
                 ApiResponse.<List<UserResponse>>builder()
                         .success(true)
-                        .message(SuccessMessages.USERS_RETRIEVED)
+                        .message(SuccessMessages.DELETED_PARENTS_RETRIEVED)
                         .data(res)
                         .build()
         );
@@ -200,7 +200,7 @@ public class UserController {
         return ResponseEntity.ok(
                 ApiResponse.<UserResponse>builder()
                         .success(true)
-                        .message(SuccessMessages.USER_UPDATED)
+                        .message(SuccessMessages.USER_UPDATED_BY_COORDINATOR)
                         .data(res)
                         .build()
         );

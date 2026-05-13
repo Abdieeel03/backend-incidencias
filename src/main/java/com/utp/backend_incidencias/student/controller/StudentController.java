@@ -125,7 +125,7 @@ public class StudentController {
         return ResponseEntity.ok(
                 ApiResponse.<List<StudentResponse>>builder()
                         .success(true)
-                        .message(SuccessMessages.STUDENTS_RETRIEVED)
+                        .message(SuccessMessages.SEARCH_RESULTS_RETRIEVED)
                         .data(res)
                         .build()
         );
@@ -142,7 +142,7 @@ public class StudentController {
         return ResponseEntity.ok(
                 ApiResponse.<List<StudentResponse>>builder()
                         .success(true)
-                        .message(SuccessMessages.STUDENTS_RETRIEVED)
+                        .message(SuccessMessages.STUDENTS_RETRIEVED_BY_PARENT)
                         .data(res)
                         .build()
         );

@@ -114,7 +114,7 @@ public class IncidentController {
         return ResponseEntity.ok(
                 ApiResponse.<List<IncidentResponse>>builder()
                         .success(true)
-                        .message(SuccessMessages.INCIDENTS_RETRIEVED)
+                        .message(SuccessMessages.INCIDENTS_RETRIEVED_BY_STUDENT)
                         .data(res)
                         .build()
         );
@@ -132,7 +132,7 @@ public class IncidentController {
         return ResponseEntity.ok(
                 ApiResponse.<List<IncidentResponse>>builder()
                         .success(true)
-                        .message(SuccessMessages.INCIDENTS_RETRIEVED)
+                        .message(SuccessMessages.INCIDENTS_RETRIEVED_BY_CLASS)
                         .data(res)
                         .build()
         );
