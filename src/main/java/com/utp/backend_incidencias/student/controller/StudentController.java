@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestClient;
 
 import java.util.List;
 
@@ -74,6 +73,7 @@ public class StudentController {
                 ApiResponse.<List<StudentResponse>>builder()
                         .success(true)
                         .message(SuccessMessages.STUDENTS_RETRIEVED)
+                        .data(res)
                         .build()
         );
     }
@@ -125,7 +125,7 @@ public class StudentController {
         return ResponseEntity.ok(
                 ApiResponse.<List<StudentResponse>>builder()
                         .success(true)
-                        .message(SuccessMessages.STUDENTS_RETRIEVED)
+                        .message(SuccessMessages.SEARCH_RESULTS_RETRIEVED)
                         .data(res)
                         .build()
         );
@@ -142,7 +142,7 @@ public class StudentController {
         return ResponseEntity.ok(
                 ApiResponse.<List<StudentResponse>>builder()
                         .success(true)
-                        .message(SuccessMessages.STUDENTS_RETRIEVED)
+                        .message(SuccessMessages.STUDENTS_RETRIEVED_BY_PARENT)
                         .data(res)
                         .build()
         );

@@ -9,13 +9,7 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findByUsername(String username);
-
     Optional<User> findByUsernameAndIsDeletedFalse(String username);
-
-    Optional<User> findByEmail(String email);
-
-    Optional<User> findByUsernameOrEmail(String username, String email);
 
     Optional<User> findByIdAndIsDeletedFalse(Long id);
 
@@ -29,7 +23,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByDniAndIdNot(String dni, Long id);
 
-    List<User> findAllByRole(Role role);
+    List<User> findAllByRoleAndIsDeletedFalse(Role role);
+
+    List<User> findAllByRoleAndIsDeletedTrue(Role role);
+
+    List<User> findAllByRoleAndCreatedByAndIsDeletedFalse(Role role, User createdBy);
+
+    List<User> findAllByRoleAndCreatedByAndIsDeletedTrue(Role role, User createdBy);
 
     List<User> findAllByIsDeletedFalse();
 

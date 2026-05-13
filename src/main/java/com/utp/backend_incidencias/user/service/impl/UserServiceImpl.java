@@ -90,6 +90,50 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserResponse> getUsersByRole(Role role) {
+
+        User currentUser = securityService.getCurrentUser();
+
+        if (currentUser.getRole() == Role.ADMIN) {
+
+            return userRepository
+                    .findAllByRoleAndIsDeletedFalse(role)
+                    .stream()
+                    .map(UserMapper::toResponse)
+                    .toList();
+
+        }
+
+        return userRepository
+                .findAllByRoleAndCreatedByAndIsDeletedFalse(role, currentUser)
+                .stream()
+                .map(UserMapper::toResponse)
+                .toList();
+    }
+
+    @Override
+    public List<UserResponse> getDeletedUsersByRole(Role role) {
+
+        User currentUser = securityService.getCurrentUser();
+
+        if (currentUser.getRole() == Role.ADMIN) {
+
+            return userRepository
+                    .findAllByRoleAndIsDeletedTrue(role)
+                    .stream()
+                    .map(UserMapper::toResponse)
+                    .toList();
+
+        }
+
+        return userRepository
+                .findAllByRoleAndCreatedByAndIsDeletedTrue(role, currentUser)
+                .stream()
+                .map(UserMapper::toResponse)
+                .toList();
+    }
+
+    @Override
     public List<UserResponse> getDeletedUsers() {
         User currentUser = securityService.getCurrentUser();
 
@@ -116,7 +160,7 @@ public class UserServiceImpl implements UserService {
 
         User user = findUserById(id);
 
-        ownershipService.validateUserOwnership(user); //TODO: Verificar si el usuario buscado no es el mismo para que no de error por null
+        ownershipService.validateUserOwnership(user);
 
         return UserMapper.toResponse(user);
     }

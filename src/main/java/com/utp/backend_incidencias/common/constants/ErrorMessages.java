@@ -44,9 +44,6 @@ public class ErrorMessages {
     public static final String CURRENT_PASSWORD_INCORRECT =
             "La contraseña actual es incorrecta";
 
-    public static final String INVALID_ROLE =
-            "Rol inválido para generación de username";
-
     public static final String FORBIDDEN_ACCESS =
             "Acceso denegado: no tienes permisos para realizar esta acción";
 
@@ -61,4 +58,7 @@ public class ErrorMessages {
 
     public static final String USER_ROLE_NOT_PROFESOR =
             "El usuario seleccionado no es un profesor";
+
+    public static final String STUDENT_NOT_IN_CLASS =
+            "El estudiante no esta en esta clase";
 }

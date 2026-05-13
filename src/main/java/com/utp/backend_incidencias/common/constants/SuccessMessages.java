@@ -15,8 +15,23 @@ public class SuccessMessages {
     public static final String USER_RETRIEVED =
             "Usuario obtenido correctamente";
 
+    public static final String TEACHERS_RETRIEVED =
+            "Profesores obtenidos correctamente";
+
+    public static final String DELETED_TEACHERS_RETRIEVED =
+            "Profesores eliminados obtenidos correctamente";
+
+    public static final String PARENTS_RETRIEVED =
+            "Padres obtenidos correctamente";
+
+    public static final String DELETED_PARENTS_RETRIEVED =
+            "Padres eliminados obtenidos correctamente";
+
     public static final String USER_UPDATED =
             "Usuario actualizado correctamente";
+
+    public static final String USER_UPDATED_BY_COORDINATOR =
+            "Usuario actualizado por coordinador correctamente";
 
     public static final String USER_DELETED =
             "Usuario eliminado correctamente";
@@ -43,8 +58,14 @@ public class SuccessMessages {
     public static final String STUDENTS_RETRIEVED =
             "Estudiantes obtenidos correctamente";
 
+    public static final String STUDENTS_RETRIEVED_BY_PARENT =
+            "Estudiantes del padre obtenidos correctamente";
+
     public static final String STUDENT_RETRIEVED =
             "Estudiante obtenido correctamente";
+
+    public static final String SEARCH_RESULTS_RETRIEVED =
+            "Resultados de la busqueda obtenidos correctamente";
 
     public static final String STUDENT_DETAILS_RETRIEVED =
             "Detalles del estudiante obtenido correctamente";
@@ -83,6 +104,9 @@ public class SuccessMessages {
     public static final String CLASS_RESTORED =
             "Clase restaurada correctamente";
 
+    public static final String STUDENTS_RETRIEVED_BY_CLASS =
+            "Estudiantes de la clase obtenidos correctamente";
+
     // INCIDENT
     public static final String INCIDENT_CREATED =
             "Incidente creado correctamente";
@@ -101,4 +125,16 @@ public class SuccessMessages {
 
     public static final String INCIDENT_MARKED_AS_READ =
             "Incidente marcado como leído correctamente";
+
+    public static final String DELETED_INCIDENTS_RETRIEVED =
+            "Incidentes eliminados obtenidos correctamente";
+
+    public static final String INCIDENT_RESTORED =
+            "Incidente restaurado correctamente";
+
+    public static final String INCIDENTS_RETRIEVED_BY_CLASS =
+            "Incidentes de la clase obtenidos correctamente";
+
+    public static final String INCIDENTS_RETRIEVED_BY_STUDENT =
+            "Incidentes del estudiante obtenidos correctamente";
 }
