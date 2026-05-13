@@ -31,6 +31,10 @@ public class OwnershipService {
             return;
         }
 
+        if (targetUser.getId().equals(currentUser.getId())) {
+            return;
+        }
+
         if (targetUser.getCreatedBy() == null ||
                 !targetUser.getCreatedBy()
                         .getId()

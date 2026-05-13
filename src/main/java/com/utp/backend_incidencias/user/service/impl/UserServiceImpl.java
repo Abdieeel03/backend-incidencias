@@ -160,7 +160,7 @@ public class UserServiceImpl implements UserService {
 
         User user = findUserById(id);
 
-        ownershipService.validateUserOwnership(user); //TODO: Verificar si el usuario buscado no es el mismo para que no de error por null
+        ownershipService.validateUserOwnership(user);
 
         return UserMapper.toResponse(user);
     }
