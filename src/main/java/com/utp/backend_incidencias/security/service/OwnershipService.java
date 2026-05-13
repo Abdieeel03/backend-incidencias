@@ -83,6 +83,42 @@ public class OwnershipService {
         }
     }
 
+    public void validateTeacherAssignment(SchoolClass schoolClass) {
+
+        User currentUser = current();
+
+        if (schoolClass.getTeacher() == null ||
+                !schoolClass.getTeacher()
+                        .getId()
+                        .equals(currentUser.getId())) {
+
+            throw new ForbiddenException(
+                    ErrorMessages.FORBIDDEN_ACCESS
+            );
+        }
+    }
+
+    private void validateTeacherStudentRelation(Student student) {
+
+        User currentUser = securityService.getCurrentUser();
+
+        boolean teachesStudent = student.getClasses()
+                .stream()
+                .anyMatch(schoolClass ->
+                        schoolClass.getTeacher() != null &&
+                                schoolClass.getTeacher()
+                                        .getId()
+                                        .equals(currentUser.getId())
+                );
+
+        if (!teachesStudent) {
+
+            throw new ForbiddenException(
+                    ErrorMessages.FORBIDDEN_ACCESS
+            );
+        }
+    }
+
     public void validateClassAccess(SchoolClass schoolClass) {
 
         User currentUser = current();
@@ -104,12 +140,12 @@ public class OwnershipService {
         );
     }
 
-    public void validateTeacherAssignment(SchoolClass schoolClass) {
+    private void validateParentStudentRelation(Student student) {
 
-        User currentUser = current();
+        User currentUser = securityService.getCurrentUser();
 
-        if (schoolClass.getTeacher() == null ||
-                !schoolClass.getTeacher()
+        if (student.getParent() == null ||
+                !student.getParent()
                         .getId()
                         .equals(currentUser.getId())) {
 
@@ -118,4 +154,32 @@ public class OwnershipService {
             );
         }
     }
+
+    public void validateStudentAccess(Student student) {
+
+        User currentUser = current();
+
+        if (currentUser.getRole() == Role.ADMIN) return;
+
+        if (currentUser.getRole() == Role.COORDINADOR) {
+            validateStudentOwnership(student);
+            return;
+        }
+
+        if (currentUser.getRole() == Role.PROFESOR) {
+            validateTeacherStudentRelation(student);
+            return;
+        }
+
+        if (currentUser.getRole() == Role.PADRE) {
+            validateParentStudentRelation(student);
+            return;
+        }
+
+        throw new ForbiddenException(
+                ErrorMessages.FORBIDDEN_ACCESS
+        );
+    }
+
+
 }

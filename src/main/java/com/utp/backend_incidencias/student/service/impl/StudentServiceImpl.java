@@ -8,6 +8,7 @@ import com.utp.backend_incidencias.security.service.OwnershipService;
 import com.utp.backend_incidencias.security.service.SecurityService;
 import com.utp.backend_incidencias.student.dto.request.CreateStudentRequest;
 import com.utp.backend_incidencias.student.dto.request.UpdateStudentRequest;
+import com.utp.backend_incidencias.student.dto.response.StudentDetailResponse;
 import com.utp.backend_incidencias.student.dto.response.StudentResponse;
 import com.utp.backend_incidencias.student.entity.Student;
 import com.utp.backend_incidencias.student.mapper.StudentMapper;
@@ -102,6 +103,17 @@ public class StudentServiceImpl implements StudentService {
                 .stream()
                 .map(StudentMapper::toResponse)
                 .toList();
+    }
+
+    @Override
+    public StudentDetailResponse getStudentDetails(Long id) {
+
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.STUDENT_NOT_FOUND));
+
+        ownershipService.validateStudentAccess(student);
+
+        return StudentMapper.toDetailResponse(student);
     }
 
     @Override
