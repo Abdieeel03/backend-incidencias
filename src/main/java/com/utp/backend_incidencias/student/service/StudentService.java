@@ -2,6 +2,7 @@ package com.utp.backend_incidencias.student.service;
 
 import com.utp.backend_incidencias.student.dto.request.CreateStudentRequest;
 import com.utp.backend_incidencias.student.dto.request.UpdateStudentRequest;
+import com.utp.backend_incidencias.student.dto.response.StudentDetailResponse;
 import com.utp.backend_incidencias.student.dto.response.StudentResponse;
 
 import java.util.List;
@@ -13,6 +14,8 @@ public interface StudentService {
     StudentResponse getStudentById(Long id);
 
     List<StudentResponse> getAllStudents();
+
+    StudentDetailResponse getStudentDetails(Long id);
 
     List<StudentResponse> getDeletedStudents();
 

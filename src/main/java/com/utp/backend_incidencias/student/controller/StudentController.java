@@ -4,6 +4,7 @@ import com.utp.backend_incidencias.common.constants.SuccessMessages;
 import com.utp.backend_incidencias.common.response.ApiResponse;
 import com.utp.backend_incidencias.student.dto.request.CreateStudentRequest;
 import com.utp.backend_incidencias.student.dto.request.UpdateStudentRequest;
+import com.utp.backend_incidencias.student.dto.response.StudentDetailResponse;
 import com.utp.backend_incidencias.student.dto.response.StudentResponse;
 import com.utp.backend_incidencias.student.service.StudentService;
 import jakarta.validation.Valid;
@@ -73,6 +74,23 @@ public class StudentController {
                 ApiResponse.<List<StudentResponse>>builder()
                         .success(true)
                         .message(SuccessMessages.STUDENTS_RETRIEVED)
+                        .build()
+        );
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}/details")
+    public ResponseEntity<ApiResponse<StudentDetailResponse>> getStudentDetails(
+            @PathVariable Long id
+    ) {
+
+        StudentDetailResponse res = studentService.getStudentDetails(id);
+
+        return ResponseEntity.ok(
+                ApiResponse.<StudentDetailResponse>builder()
+                        .success(true)
+                        .message(SuccessMessages.STUDENT_DETAILS_RETRIEVED)
+                        .data(res)
                         .build()
         );
     }

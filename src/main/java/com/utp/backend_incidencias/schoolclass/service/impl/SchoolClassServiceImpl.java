@@ -12,7 +12,9 @@ import com.utp.backend_incidencias.schoolclass.repository.SchoolClassRepository;
 import com.utp.backend_incidencias.schoolclass.service.SchoolClassService;
 import com.utp.backend_incidencias.security.service.OwnershipService;
 import com.utp.backend_incidencias.security.service.SecurityService;
+import com.utp.backend_incidencias.student.dto.response.StudentResponse;
 import com.utp.backend_incidencias.student.entity.Student;
+import com.utp.backend_incidencias.student.mapper.StudentMapper;
 import com.utp.backend_incidencias.student.repository.StudentRepository;
 import com.utp.backend_incidencias.user.entity.User;
 import com.utp.backend_incidencias.user.enums.Role;
@@ -126,6 +128,20 @@ public class SchoolClassServiceImpl implements SchoolClassService {
                 .stream()
                 .map(SchoolClassMapper::toResponse)
                 .toList();
+    }
+
+    @Override
+    public List<StudentResponse> getStudentsByClass(Long classId) {
+
+        SchoolClass schoolClass = findClassById(classId);
+
+        ownershipService.validateClassAccess(schoolClass);
+
+        return schoolClass.getStudents()
+                .stream()
+                .map(StudentMapper::toResponse)
+                .toList();
+
     }
 
     @Override

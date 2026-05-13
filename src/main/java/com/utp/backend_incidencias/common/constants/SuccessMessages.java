@@ -46,6 +46,9 @@ public class SuccessMessages {
     public static final String STUDENT_RETRIEVED =
             "Estudiante obtenido correctamente";
 
+    public static final String STUDENT_DETAILS_RETRIEVED =
+            "Detalles del estudiante obtenido correctamente";
+
     public static final String STUDENT_UPDATED =
             "Estudiante actualizado correctamente";
 
