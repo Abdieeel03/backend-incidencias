@@ -2,7 +2,6 @@ package com.utp.backend_incidencias.security.service;
 
 import com.utp.backend_incidencias.common.constants.ErrorMessages;
 import com.utp.backend_incidencias.common.exception.ForbiddenException;
-import com.utp.backend_incidencias.common.exception.UnauthorizedException;
 import com.utp.backend_incidencias.incident.entity.Incident;
 import com.utp.backend_incidencias.schoolclass.entity.SchoolClass;
 import com.utp.backend_incidencias.student.entity.Student;

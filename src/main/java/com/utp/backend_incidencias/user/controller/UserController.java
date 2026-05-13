@@ -2,7 +2,6 @@ package com.utp.backend_incidencias.user.controller;
 
 import com.utp.backend_incidencias.common.constants.SuccessMessages;
 import com.utp.backend_incidencias.common.response.ApiResponse;
-import com.utp.backend_incidencias.student.dto.response.StudentResponse;
 import com.utp.backend_incidencias.user.dto.request.ChangePasswordRequest;
 import com.utp.backend_incidencias.user.dto.request.CoordinatorUpdateUserRequest;
 import com.utp.backend_incidencias.user.dto.request.CreateUserRequest;
@@ -15,8 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -238,7 +235,7 @@ public class UserController {
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .success(true)
-                        .message(SuccessMessages.USERS_RETRIEVED)
+                        .message(SuccessMessages.USER_RESTORED)
                         .build()
         );
     }

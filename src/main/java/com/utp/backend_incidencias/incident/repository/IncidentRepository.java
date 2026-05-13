@@ -6,7 +6,6 @@ import com.utp.backend_incidencias.student.entity.Student;
 import com.utp.backend_incidencias.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
