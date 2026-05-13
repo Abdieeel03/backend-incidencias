@@ -6,6 +6,7 @@ import com.utp.backend_incidencias.schoolclass.dto.request.CreateSchoolClassRequ
 import com.utp.backend_incidencias.schoolclass.dto.request.UpdateSchoolClassRequest;
 import com.utp.backend_incidencias.schoolclass.dto.response.SchoolClassResponse;
 import com.utp.backend_incidencias.schoolclass.service.SchoolClassService;
+import com.utp.backend_incidencias.student.dto.response.StudentResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -96,6 +97,23 @@ public class SchoolClassController {
                 ApiResponse.<List<SchoolClassResponse>>builder()
                         .success(true)
                         .message(SuccessMessages.CLASSES_RETRIEVED)
+                        .data(res)
+                        .build()
+        );
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','COORDINADOR','PROFESOR')")
+    @GetMapping("/{id}/students")
+    public ResponseEntity<ApiResponse<List<StudentResponse>>> getStudentsByClass(
+            @PathVariable Long id
+    ) {
+
+        List<StudentResponse> res = schoolClassService.getStudentsByClass(id);
+
+        return ResponseEntity.ok(
+                ApiResponse.<List<StudentResponse>>builder()
+                        .success(true)
+                        .message("Students retrieved successfully")
                         .data(res)
                         .build()
         );
