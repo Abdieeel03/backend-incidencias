@@ -7,6 +7,7 @@ import com.utp.backend_incidencias.user.dto.request.ChangePasswordRequest;
 import com.utp.backend_incidencias.user.dto.request.CreateUserRequest;
 import com.utp.backend_incidencias.user.dto.request.UpdateUserRequest;
 import com.utp.backend_incidencias.user.dto.response.UserResponse;
+import com.utp.backend_incidencias.user.enums.Role;
 import com.utp.backend_incidencias.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -78,6 +79,74 @@ public class UserController {
                         .success(true)
                         .message(SuccessMessages.USER_RETRIEVED)
                         .data(user)
+                        .build()
+        );
+    }
+
+    @PreAuthorize(
+            "hasRole('ADMIN') or hasRole('COORDINADOR')"
+    )
+    @GetMapping("/teachers")
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getTeachers() {
+
+        List<UserResponse> res = userService.getUsersByRole(Role.PROFESOR);
+
+        return ResponseEntity.ok(
+                ApiResponse.<List<UserResponse>>builder()
+                        .success(true)
+                        .message(SuccessMessages.USERS_RETRIEVED)
+                        .data(res)
+                        .build()
+        );
+    }
+
+    @PreAuthorize(
+            "hasRole('ADMIN') or hasRole('COORDINADOR')"
+    )
+    @GetMapping("/teachers/deleted")
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getDeletedTeachers() {
+
+        List<UserResponse> res = userService.getDeletedUsersByRole(Role.PROFESOR);
+
+        return ResponseEntity.ok(
+                ApiResponse.<List<UserResponse>>builder()
+                        .success(true)
+                        .message(SuccessMessages.USERS_RETRIEVED)
+                        .data(res)
+                        .build()
+        );
+    }
+
+    @PreAuthorize(
+            "hasRole('ADMIN') or hasRole('COORDINADOR')"
+    )
+    @GetMapping("/parents")
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getParents() {
+
+        List<UserResponse> res = userService.getUsersByRole(Role.PADRE);
+
+        return ResponseEntity.ok(
+                ApiResponse.<List<UserResponse>>builder()
+                        .success(true)
+                        .message(SuccessMessages.USERS_RETRIEVED)
+                        .data(res)
+                        .build()
+        );
+    }
+
+    @PreAuthorize(
+            "hasRole('ADMIN') or hasRole('COORDINADOR')"
+    )
+    @GetMapping("/parents/deleted")
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getDeletedParents() {
+
+        List<UserResponse> res = userService.getDeletedUsersByRole(Role.PADRE);
+
+        return ResponseEntity.ok(
+                ApiResponse.<List<UserResponse>>builder()
+                        .success(true)
+                        .message(SuccessMessages.USERS_RETRIEVED)
+                        .data(res)
                         .build()
         );
     }

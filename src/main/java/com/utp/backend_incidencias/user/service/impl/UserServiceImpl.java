@@ -90,6 +90,50 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserResponse> getUsersByRole(Role role) {
+
+        User currentUser = securityService.getCurrentUser();
+
+        if (currentUser.getRole() == Role.ADMIN) {
+
+            return userRepository
+                    .findAllByRoleAndIsDeletedFalse(role)
+                    .stream()
+                    .map(UserMapper::toResponse)
+                    .toList();
+
+        }
+
+        return userRepository
+                .findAllByRoleAndCreatedByAndIsDeletedFalse(role, currentUser)
+                .stream()
+                .map(UserMapper::toResponse)
+                .toList();
+    }
+
+    @Override
+    public List<UserResponse> getDeletedUsersByRole(Role role) {
+
+        User currentUser = securityService.getCurrentUser();
+
+        if (currentUser.getRole() == Role.ADMIN) {
+
+            return userRepository
+                    .findAllByRoleAndIsDeletedTrue(role)
+                    .stream()
+                    .map(UserMapper::toResponse)
+                    .toList();
+
+        }
+
+        return userRepository
+                .findAllByRoleAndCreatedByAndIsDeletedTrue(role, currentUser)
+                .stream()
+                .map(UserMapper::toResponse)
+                .toList();
+    }
+
+    @Override
     public List<UserResponse> getDeletedUsers() {
         User currentUser = securityService.getCurrentUser();
 

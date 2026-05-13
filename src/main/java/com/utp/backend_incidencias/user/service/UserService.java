@@ -5,6 +5,7 @@ import com.utp.backend_incidencias.user.dto.request.CoordinatorUpdateUserRequest
 import com.utp.backend_incidencias.user.dto.request.CreateUserRequest;
 import com.utp.backend_incidencias.user.dto.request.UpdateUserRequest;
 import com.utp.backend_incidencias.user.dto.response.UserResponse;
+import com.utp.backend_incidencias.user.enums.Role;
 
 import java.util.List;
 
@@ -15,6 +16,10 @@ public interface UserService {
     List<UserResponse> getAllUsers();
 
     List<UserResponse> getUsersByCurrentUser();
+
+    List<UserResponse> getUsersByRole(Role role);
+
+    List<UserResponse> getDeletedUsersByRole(Role role);
 
     List<UserResponse> getDeletedUsers();
 
