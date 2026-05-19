@@ -166,15 +166,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUser(Long id, UpdateUserRequest req) {
+    public UserResponse updateUser(UpdateUserRequest req) {
 
-        User user = findUserById(id);
+        User user = securityService.getCurrentUser();
 
-        if (userRepository.existsByEmailAndIdNot(req.getEmail(), id)) {
+        if (userRepository.existsByEmailAndIdNot(req.getEmail(), user.getId())) {
             throw new ConflictException(ErrorMessages.EMAIL_ALREADY_EXISTS);
         }
-
-        ownershipService.validateUserOwnership(user);
 
         UserMapper.updateEntity(user, req);
 

@@ -167,16 +167,15 @@ public class UserController {
     }
 
     @PreAuthorize(
-            "hasRole('ADMIN') or hasRole('COORDINADOR')"
+            "isAuthenticated()"
     )
-    @PutMapping("/{id}")
+    @PutMapping("/me/update")
     public ResponseEntity<ApiResponse<UserResponse>> updateUser(
-            @PathVariable Long id,
             @Valid @RequestBody UpdateUserRequest req
     ) {
 
         UserResponse updatedUser =
-                userService.updateUser(id, req);
+                userService.updateUser(req);
 
         return ResponseEntity.ok(
                 ApiResponse.<UserResponse>builder()

@@ -25,7 +25,7 @@ public interface UserService {
 
     UserResponse getUserById(Long id);
 
-    UserResponse updateUser(Long id, UpdateUserRequest req);
+    UserResponse updateUser(UpdateUserRequest req);
 
     UserResponse updateUserByCoordinator(Long id, CoordinatorUpdateUserRequest req);
 

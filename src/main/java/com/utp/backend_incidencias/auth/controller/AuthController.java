@@ -1,12 +1,15 @@
 package com.utp.backend_incidencias.auth.controller;
 
 import com.utp.backend_incidencias.auth.dto.request.LoginRequest;
+import com.utp.backend_incidencias.auth.dto.request.RecoveryPasswordRequest;
 import com.utp.backend_incidencias.auth.dto.request.RegisterRequest;
 import com.utp.backend_incidencias.auth.dto.response.AuthResponse;
 import com.utp.backend_incidencias.auth.service.AuthService;
 import com.utp.backend_incidencias.common.constants.SuccessMessages;
 import com.utp.backend_incidencias.common.response.ApiResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,6 +52,38 @@ public class AuthController {
                         .success(true)
                         .message(SuccessMessages.USER_LOGUED)
                         .data(res)
+                        .build()
+        );
+    }
+
+    @PostMapping("/recovery-password")
+    public ResponseEntity<ApiResponse<Void>> recoveryPassword(
+            @Valid @RequestBody RecoveryPasswordRequest req
+    ) {
+
+        authService.recoveryPassword(req);
+
+        return ResponseEntity.ok(
+                ApiResponse.<Void>builder()
+                        .success(true)
+                        .message(SuccessMessages.RECOVERED_PASSWORD)
+                        .data(null)
+                        .build()
+        );
+    }
+
+    @PostMapping("/find-by-email")
+    public ResponseEntity<ApiResponse<Void>> findByEmail(
+            @NotBlank @RequestBody @Email String email
+    ) {
+
+        authService.findByEmail(email);
+
+        return ResponseEntity.ok(
+                ApiResponse.<Void>builder()
+                        .success(true)
+                        .message(SuccessMessages.RECOVERED_PASSWORD)
+                        .data(null)
                         .build()
         );
     }

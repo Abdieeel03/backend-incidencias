@@ -1,11 +1,13 @@
 package com.utp.backend_incidencias.auth.service;
 
 import com.utp.backend_incidencias.auth.dto.request.LoginRequest;
+import com.utp.backend_incidencias.auth.dto.request.RecoveryPasswordRequest;
 import com.utp.backend_incidencias.auth.dto.request.RegisterRequest;
 import com.utp.backend_incidencias.auth.dto.response.AuthResponse;
 import com.utp.backend_incidencias.auth.factory.UserFactory;
 import com.utp.backend_incidencias.common.constants.ErrorMessages;
 import com.utp.backend_incidencias.common.exception.ConflictException;
+import com.utp.backend_incidencias.common.exception.ResourceNotFoundException;
 import com.utp.backend_incidencias.common.exception.UnauthorizedException;
 import com.utp.backend_incidencias.security.jwt.JwtService;
 import com.utp.backend_incidencias.user.entity.User;
@@ -82,4 +84,33 @@ public class AuthService {
                 .role(user.getRole())
                 .build();
     }
+
+    public void recoveryPassword (RecoveryPasswordRequest req){
+
+        User user = userRepository.findByEmailAndIsDeletedFalse(req.getEmail())
+                .orElseThrow(()-> new ResourceNotFoundException(ErrorMessages.USER_NOT_FOUND));
+
+        if(!req.getNewPassword().equals(req.getConfirmPassword())){
+            throw new ConflictException(ErrorMessages.PASSWORDS_DO_NOT_MATCH);
+        }
+
+        user.setPassword(
+                passwordEncoder.encode(req.getNewPassword())
+        );
+
+        userRepository.save(user);
+
+        log.info(
+                "Contraseña cambiada correctamente para el usuario con id: {}",
+                user.getId()
+        );
+        
+    }
+
+    public void findByEmail(String email) {
+
+        User user = userRepository.findByEmailAndIsDeletedFalse(email)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.USER_NOT_FOUND));
+    }
+
 }

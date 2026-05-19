@@ -51,6 +51,9 @@ public class SuccessMessages {
     public static final String USER_RESTORED =
             "Usuario recuperado correctamente";
 
+    public static final String RECOVERED_PASSWORD =
+            "Contraseña recuperada correctamente";
+
     // STUDENT
     public static final String STUDENT_CREATED =
             "Estudiante creado correctamente";
