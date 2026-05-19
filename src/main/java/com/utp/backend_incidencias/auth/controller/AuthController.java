@@ -6,8 +6,6 @@ import com.utp.backend_incidencias.auth.service.AuthService;
 import com.utp.backend_incidencias.common.constants.SuccessMessages;
 import com.utp.backend_incidencias.common.response.ApiResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
