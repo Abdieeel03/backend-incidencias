@@ -42,7 +42,6 @@ public class UserMapper {
 
     public static void updateEntity(User user, UpdateUserRequest req){
         user.setEmail(req.getEmail());
-        user.setName(req.getName());
     }
 
 }
