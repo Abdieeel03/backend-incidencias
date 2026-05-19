@@ -5,6 +5,12 @@ public class SuccessMessages {
     private SuccessMessages() {
     }
 
+    public static final String RECOVERY_CODE_SENT =
+            "Código de recuperación enviado al correo";
+
+    public static final String CODE_VERIFIED =
+            "Código verificado correctamente";
+
     // USER
     public static final String USER_CREATED =
             "Usuario creado correctamente";

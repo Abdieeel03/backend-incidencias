@@ -1,15 +1,11 @@
 package com.utp.backend_incidencias.auth.controller;
 
-import com.utp.backend_incidencias.auth.dto.request.LoginRequest;
-import com.utp.backend_incidencias.auth.dto.request.RecoveryPasswordRequest;
-import com.utp.backend_incidencias.auth.dto.request.RegisterRequest;
+import com.utp.backend_incidencias.auth.dto.request.*;
 import com.utp.backend_incidencias.auth.dto.response.AuthResponse;
 import com.utp.backend_incidencias.auth.service.AuthService;
 import com.utp.backend_incidencias.common.constants.SuccessMessages;
 import com.utp.backend_incidencias.common.response.ApiResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,28 +52,44 @@ public class AuthController {
         );
     }
 
-    @PostMapping("/recovery-password")
-    public ResponseEntity<ApiResponse<Void>> recoveryPassword(
-            @Valid @RequestBody RecoveryPasswordRequest req
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ApiResponse<Void>> forgotPassword(
+            @Valid @RequestBody ForgotPasswordRequest req
     ) {
 
-        authService.recoveryPassword(req);
+        authService.forgotPassword(req);
 
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .success(true)
-                        .message(SuccessMessages.RECOVERED_PASSWORD)
+                        .message(SuccessMessages.RECOVERY_CODE_SENT)
                         .data(null)
                         .build()
         );
     }
 
-    @PostMapping("/find-by-email")
-    public ResponseEntity<ApiResponse<Void>> findByEmail(
-            @NotBlank @RequestBody @Email String email
+    @PostMapping("/verify-reset-code")
+    public ResponseEntity<ApiResponse<Void>> verifyResetCode(
+            @Valid @RequestBody VerifyResetCodeRequest req
     ) {
 
-        authService.findByEmail(email);
+        authService.verifyResetCode(req);
+
+        return ResponseEntity.ok(
+                ApiResponse.<Void>builder()
+                        .success(true)
+                        .message(SuccessMessages.CODE_VERIFIED)
+                        .data(null)
+                        .build()
+        );
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ApiResponse<Void>> resetPassword(
+            @Valid @RequestBody ResetPasswordRequest req
+    ) {
+
+        authService.resetPassword(req);
 
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
