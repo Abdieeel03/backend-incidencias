@@ -314,7 +314,18 @@ public class SchoolClassServiceImpl implements SchoolClassService {
             return Collections.emptyList();
         }
 
-        return studentRepository.findByIdInAndCreatedByAndIsDeletedFalse(ids, currentUser);
+        List<Student> students = studentRepository
+                .findByIdInAndCreatedByAndIsDeletedFalse(ids, currentUser);
+
+        Set<Long> uniqueIds = new HashSet<>(ids);
+
+        if (students.size() != uniqueIds.size()) {
+            throw new ResourceNotFoundException(
+                    ErrorMessages.STUDENTS_NOT_FOUND
+            );
+        }
+
+        return students;
     }
 
     private void validateTeacherRole(User teacher) {

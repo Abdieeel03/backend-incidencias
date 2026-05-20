@@ -14,6 +14,9 @@ public class ErrorMessages {
     public static final String STUDENT_NOT_FOUND =
             "Estudiante no encontrado";
 
+    public static final String STUDENTS_NOT_FOUND =
+            "Algunos estudiantes no fueron encontrados";
+
     public static final String STUDENT_ALREADY_ACTIVE =
             "El estudiante ya se encuentra activo";
 

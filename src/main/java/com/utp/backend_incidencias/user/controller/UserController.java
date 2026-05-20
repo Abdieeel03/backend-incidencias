@@ -10,16 +10,19 @@ import com.utp.backend_incidencias.user.dto.response.UserResponse;
 import com.utp.backend_incidencias.user.enums.Role;
 import com.utp.backend_incidencias.user.service.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@Validated
 @RequiredArgsConstructor
 public class UserController {
 
@@ -137,7 +140,9 @@ public class UserController {
     )
     @GetMapping("/parents/dni/{dni}")
     public ResponseEntity<ApiResponse<UserResponse>> getParentByDni(
-            @PathVariable String dni
+            @PathVariable
+            @Pattern(regexp = "\\d{8}", message = "El DNI debe tener 8 dígitos")
+            String dni
     ) {
 
         UserResponse res = userService.getParentByDni(dni);
