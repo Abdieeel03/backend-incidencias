@@ -131,6 +131,9 @@ public class StudentController {
         );
     }
 
+    @PreAuthorize(
+            "hasRole('ADMIN') or hasRole('COORDINADOR')"
+    )
     @GetMapping("/parent/{parentId}")
     public ResponseEntity<ApiResponse<List<StudentResponse>>> getStudentsByParentId(
             @PathVariable Long parentId
