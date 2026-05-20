@@ -23,8 +23,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -142,6 +145,67 @@ public class SchoolClassServiceImpl implements SchoolClassService {
                 .map(StudentMapper::toResponse)
                 .toList();
 
+    }
+
+    @Override
+    public SchoolClassResponse addStudentsToClass(Long id, List<Long> studentIds) {
+
+        validateStudentIds(studentIds);
+
+        SchoolClass schoolClass = findClassById(id);
+
+        ownershipService.validateClassOwnership(schoolClass);
+
+        List<Student> students = findStudentsByIds(studentIds);
+
+        ownershipService.validateStudentsOwnership(students);
+
+        List<Student> updatedStudents = new ArrayList<>();
+
+        if (schoolClass.getStudents() != null) {
+            updatedStudents.addAll(schoolClass.getStudents());
+        }
+
+        Set<Long> existingIds = new HashSet<>();
+
+        for (Student existing : updatedStudents) {
+            if (existing.getId() != null) {
+                existingIds.add(existing.getId());
+            }
+        }
+
+        for (Student student : students) {
+            if (!existingIds.contains(student.getId())) {
+                updatedStudents.add(student);
+            }
+        }
+
+        schoolClass.setStudents(updatedStudents);
+
+        SchoolClass updatedClass = schoolClassRepository.save(schoolClass);
+
+        log.info(
+                "Estudiantes agregados correctamente a la clase con id: {}",
+                updatedClass.getId()
+        );
+
+        return SchoolClassMapper.toResponse(updatedClass);
+    }
+
+    private void validateStudentIds(List<Long> studentIds) {
+        if (studentIds == null || studentIds.isEmpty()) {
+            throw new ConflictException(
+                    ErrorMessages.EMPTY_STUDENT_IDS
+            );
+        }
+
+        Set<Long> uniqueIds = new HashSet<>(studentIds);
+
+        if (uniqueIds.size() != studentIds.size()) {
+            throw new ConflictException(
+                    ErrorMessages.DUPLICATE_STUDENT_IDS
+            );
+        }
     }
 
     @Override

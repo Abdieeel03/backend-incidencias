@@ -61,4 +61,10 @@ public class ErrorMessages {
 
     public static final String STUDENT_NOT_IN_CLASS =
             "El estudiante no esta en esta clase";
+
+    public static final String DUPLICATE_STUDENT_IDS =
+            "La lista de estudiantes tiene ids duplicados";
+
+    public static final String EMPTY_STUDENT_IDS =
+            "La lista de estudiantes no puede estar vacía";
 }

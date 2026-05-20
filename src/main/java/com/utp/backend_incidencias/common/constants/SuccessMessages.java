@@ -116,6 +116,9 @@ public class SuccessMessages {
     public static final String STUDENTS_RETRIEVED_BY_CLASS =
             "Estudiantes de la clase obtenidos correctamente";
 
+    public static final String STUDENTS_ADDED_TO_CLASS =
+            "Estudiantes agregados a la clase correctamente";
+
     // INCIDENT
     public static final String INCIDENT_CREATED =
             "Incidente creado correctamente";

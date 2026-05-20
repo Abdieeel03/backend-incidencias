@@ -21,6 +21,8 @@ public interface SchoolClassService {
 
     List<StudentResponse> getStudentsByClass(Long id);
 
+    SchoolClassResponse addStudentsToClass(Long id, List<Long> studentIds);
+
     SchoolClassResponse updateClass(
             Long id,
             UpdateSchoolClassRequest req
