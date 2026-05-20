@@ -135,6 +135,25 @@ public class UserController {
     @PreAuthorize(
             "hasRole('ADMIN') or hasRole('COORDINADOR')"
     )
+    @GetMapping("/parents/dni/{dni}")
+    public ResponseEntity<ApiResponse<UserResponse>> getParentByDni(
+            @PathVariable String dni
+    ) {
+
+        UserResponse res = userService.getParentByDni(dni);
+
+        return ResponseEntity.ok(
+                ApiResponse.<UserResponse>builder()
+                        .success(true)
+                        .message(SuccessMessages.USER_RETRIEVED)
+                        .data(res)
+                        .build()
+        );
+    }
+
+    @PreAuthorize(
+            "hasRole('ADMIN') or hasRole('COORDINADOR')"
+    )
     @GetMapping("/parents/deleted")
     public ResponseEntity<ApiResponse<List<UserResponse>>> getDeletedParents() {
 

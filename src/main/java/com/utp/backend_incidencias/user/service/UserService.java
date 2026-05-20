@@ -19,6 +19,8 @@ public interface UserService {
 
     List<UserResponse> getUsersByRole(Role role);
 
+    UserResponse getParentByDni(String dni);
+
     List<UserResponse> getDeletedUsersByRole(Role role);
 
     List<UserResponse> getDeletedUsers();
