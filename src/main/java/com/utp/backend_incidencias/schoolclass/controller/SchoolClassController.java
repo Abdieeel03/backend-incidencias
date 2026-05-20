@@ -2,6 +2,7 @@ package com.utp.backend_incidencias.schoolclass.controller;
 
 import com.utp.backend_incidencias.common.constants.SuccessMessages;
 import com.utp.backend_incidencias.common.response.ApiResponse;
+import com.utp.backend_incidencias.schoolclass.dto.request.AddStudentsRequest;
 import com.utp.backend_incidencias.schoolclass.dto.request.CreateSchoolClassRequest;
 import com.utp.backend_incidencias.schoolclass.dto.request.UpdateSchoolClassRequest;
 import com.utp.backend_incidencias.schoolclass.dto.response.SchoolClassResponse;
@@ -114,6 +115,27 @@ public class SchoolClassController {
                 ApiResponse.<List<StudentResponse>>builder()
                         .success(true)
                         .message(SuccessMessages.STUDENTS_RETRIEVED_BY_CLASS)
+                        .data(res)
+                        .build()
+        );
+    }
+
+    @PutMapping("/{id}/students")
+    @PreAuthorize("hasRole('COORDINADOR')")
+    public ResponseEntity<ApiResponse<SchoolClassResponse>> addStudentsToClass(
+            @PathVariable Long id,
+            @Valid @RequestBody AddStudentsRequest req
+    ) {
+
+        SchoolClassResponse res = schoolClassService.addStudentsToClass(
+                id,
+                req.getStudentIds()
+        );
+
+        return ResponseEntity.ok(
+                ApiResponse.<SchoolClassResponse>builder()
+                        .success(true)
+                        .message(SuccessMessages.STUDENTS_ADDED_TO_CLASS)
                         .data(res)
                         .build()
         );

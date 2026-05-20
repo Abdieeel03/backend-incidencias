@@ -112,6 +112,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserResponse getParentByDni(String dni) {
+        User parent = userRepository
+                .findByDniAndRoleAndIsDeletedFalse(dni, Role.PADRE)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        ErrorMessages.USER_NOT_FOUND
+                ));
+
+        ownershipService.validateUserOwnership(parent);
+
+        return UserMapper.toResponse(parent);
+    }
+
+    @Override
     public List<UserResponse> getDeletedUsersByRole(Role role) {
 
         User currentUser = securityService.getCurrentUser();
