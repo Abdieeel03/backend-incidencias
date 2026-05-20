@@ -5,6 +5,12 @@ public class SuccessMessages {
     private SuccessMessages() {
     }
 
+    public static final String RECOVERY_CODE_SENT =
+            "Código de recuperación enviado al correo";
+
+    public static final String CODE_VERIFIED =
+            "Código verificado correctamente";
+
     // USER
     public static final String USER_CREATED =
             "Usuario creado correctamente";
@@ -50,6 +56,9 @@ public class SuccessMessages {
 
     public static final String USER_RESTORED =
             "Usuario recuperado correctamente";
+
+    public static final String RECOVERED_PASSWORD =
+            "Contraseña recuperada correctamente";
 
     // STUDENT
     public static final String STUDENT_CREATED =
@@ -106,6 +115,9 @@ public class SuccessMessages {
 
     public static final String STUDENTS_RETRIEVED_BY_CLASS =
             "Estudiantes de la clase obtenidos correctamente";
+
+    public static final String STUDENTS_ADDED_TO_CLASS =
+            "Estudiantes agregados a la clase correctamente";
 
     // INCIDENT
     public static final String INCIDENT_CREATED =

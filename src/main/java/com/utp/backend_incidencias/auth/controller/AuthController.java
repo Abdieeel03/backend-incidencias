@@ -1,7 +1,6 @@
 package com.utp.backend_incidencias.auth.controller;
 
-import com.utp.backend_incidencias.auth.dto.request.LoginRequest;
-import com.utp.backend_incidencias.auth.dto.request.RegisterRequest;
+import com.utp.backend_incidencias.auth.dto.request.*;
 import com.utp.backend_incidencias.auth.dto.response.AuthResponse;
 import com.utp.backend_incidencias.auth.service.AuthService;
 import com.utp.backend_incidencias.common.constants.SuccessMessages;
@@ -49,6 +48,54 @@ public class AuthController {
                         .success(true)
                         .message(SuccessMessages.USER_LOGUED)
                         .data(res)
+                        .build()
+        );
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ApiResponse<Void>> forgotPassword(
+            @Valid @RequestBody ForgotPasswordRequest req
+    ) {
+
+        authService.forgotPassword(req);
+
+        return ResponseEntity.ok(
+                ApiResponse.<Void>builder()
+                        .success(true)
+                        .message(SuccessMessages.RECOVERY_CODE_SENT)
+                        .data(null)
+                        .build()
+        );
+    }
+
+    @PostMapping("/verify-reset-code")
+    public ResponseEntity<ApiResponse<Void>> verifyResetCode(
+            @Valid @RequestBody VerifyResetCodeRequest req
+    ) {
+
+        authService.verifyResetCode(req);
+
+        return ResponseEntity.ok(
+                ApiResponse.<Void>builder()
+                        .success(true)
+                        .message(SuccessMessages.CODE_VERIFIED)
+                        .data(null)
+                        .build()
+        );
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ApiResponse<Void>> resetPassword(
+            @Valid @RequestBody ResetPasswordRequest req
+    ) {
+
+        authService.resetPassword(req);
+
+        return ResponseEntity.ok(
+                ApiResponse.<Void>builder()
+                        .success(true)
+                        .message(SuccessMessages.RECOVERED_PASSWORD)
+                        .data(null)
                         .build()
         );
     }

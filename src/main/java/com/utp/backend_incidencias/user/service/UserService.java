@@ -19,13 +19,15 @@ public interface UserService {
 
     List<UserResponse> getUsersByRole(Role role);
 
+    UserResponse getParentByDni(String dni);
+
     List<UserResponse> getDeletedUsersByRole(Role role);
 
     List<UserResponse> getDeletedUsers();
 
     UserResponse getUserById(Long id);
 
-    UserResponse updateUser(Long id, UpdateUserRequest req);
+    UserResponse updateUser(UpdateUserRequest req);
 
     UserResponse updateUserByCoordinator(Long id, CoordinatorUpdateUserRequest req);
 

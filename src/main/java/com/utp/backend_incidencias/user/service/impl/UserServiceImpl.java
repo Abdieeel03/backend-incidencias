@@ -112,6 +112,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserResponse getParentByDni(String dni) {
+        User parent = userRepository
+                .findByDniAndRoleAndIsDeletedFalse(dni, Role.PADRE)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        ErrorMessages.USER_NOT_FOUND
+                ));
+
+        ownershipService.validateUserOwnership(parent);
+
+        return UserMapper.toResponse(parent);
+    }
+
+    @Override
     public List<UserResponse> getDeletedUsersByRole(Role role) {
 
         User currentUser = securityService.getCurrentUser();
@@ -166,15 +179,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUser(Long id, UpdateUserRequest req) {
+    public UserResponse updateUser(UpdateUserRequest req) {
 
-        User user = findUserById(id);
+        User user = securityService.getCurrentUser();
 
-        if (userRepository.existsByEmailAndIdNot(req.getEmail(), id)) {
+        if (userRepository.existsByEmailAndIdNot(req.getEmail(), user.getId())) {
             throw new ConflictException(ErrorMessages.EMAIL_ALREADY_EXISTS);
         }
-
-        ownershipService.validateUserOwnership(user);
 
         UserMapper.updateEntity(user, req);
 
