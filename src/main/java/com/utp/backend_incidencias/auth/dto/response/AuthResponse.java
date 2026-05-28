@@ -18,6 +18,8 @@ public class AuthResponse {
 
     private Long userId;
 
+    private String name;
+
     private String username;
 
     private String email;

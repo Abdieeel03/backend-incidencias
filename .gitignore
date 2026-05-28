@@ -38,3 +38,5 @@ out/
 
 ### Enviroment ###
 .env
+
+/src/main/java/com/utp/backend_incidencias/common/config/DataLoader.java
