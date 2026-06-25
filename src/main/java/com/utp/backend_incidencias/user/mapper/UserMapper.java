@@ -15,6 +15,7 @@ public class UserMapper {
                 .name(req.getName())
                 .dni(req.getDni())
                 .password(req.getPassword())
+                .imageUrl(req.getImageUrl())
                 .role(req.getRole())
                 .build();
     }
@@ -26,6 +27,7 @@ public class UserMapper {
                 .email(user.getEmail())
                 .name(user.getName())
                 .dni(user.getDni())
+                .imageUrl(user.getImageUrl())
                 .role(user.getRole())
                 .createdById(
                         user.getCreatedBy() != null
@@ -42,6 +44,7 @@ public class UserMapper {
 
     public static void updateEntity(User user, UpdateUserRequest req){
         user.setEmail(req.getEmail());
+        user.setImageUrl(req.getImageUrl());
     }
 
 }

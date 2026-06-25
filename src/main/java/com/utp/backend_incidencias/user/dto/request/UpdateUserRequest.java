@@ -16,4 +16,6 @@ public class UpdateUserRequest {
     @Size(max = 150)
     private String email;
 
+    private String imageUrl;
+
 }

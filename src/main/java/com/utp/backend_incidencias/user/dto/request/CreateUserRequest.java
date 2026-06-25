@@ -28,6 +28,8 @@ public class CreateUserRequest {
     @Size(min = 8, max = 100)
     private String password;
 
+    private String imageUrl;
+
     @NotNull
     private Role role;
 }

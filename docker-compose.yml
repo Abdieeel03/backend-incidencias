@@ -23,9 +23,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      DB_URL: jdbc:postgresql://postgres:5432/incidencias_db
-      DB_USERNAME: admin
-      DB_PASSWORD: admin123
+      DB_URL: ${DB_URL:-jdbc:postgresql://postgres:5432/incidencias_db}
+      DB_USERNAME: ${DB_USERNAME:-admin}
+      DB_PASSWORD: ${DB_PASSWORD:-admin123}
       JPA_HIBERNATE_DDL_AUTO: update
       JWT_SECRET: ${JWT_SECRET:-clave-secreta-jwt-desarrollo-local-32chars!!}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-clave-secreta-refresh-desarrollo-local-32ch!!}

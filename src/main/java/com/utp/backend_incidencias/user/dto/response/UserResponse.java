@@ -20,6 +20,8 @@ public class UserResponse {
 
     private String dni;
 
+    private String imageUrl;
+
     private Role role;
 
     private Long createdById;
