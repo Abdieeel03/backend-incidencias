@@ -324,7 +324,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse getMeUser() {
-        return null;
+        User user = securityService.getCurrentUser();
+
+        return UserMapper.toResponse(user);
     }
 
     private void validateUserData(CreateUserRequest req) {
