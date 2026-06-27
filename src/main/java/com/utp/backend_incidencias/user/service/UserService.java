@@ -38,4 +38,6 @@ public interface UserService {
     );
 
     void restoreUser(Long id);
+
+    UserResponse getMeUser();
 }

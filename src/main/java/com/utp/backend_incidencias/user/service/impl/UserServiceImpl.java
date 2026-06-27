@@ -300,6 +300,11 @@ public class UserServiceImpl implements UserService {
         );
     }
 
+    @Override
+    public UserResponse getMeUser() {
+        return null;
+    }
+
     private void validateUserData(CreateUserRequest req) {
 
         if (userRepository.existsByEmail(req.getEmail())) {

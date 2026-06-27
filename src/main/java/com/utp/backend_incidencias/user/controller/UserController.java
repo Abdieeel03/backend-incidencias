@@ -177,7 +177,7 @@ public class UserController {
             "hasRole('ADMIN') or hasRole('COORDINADOR')"
     )
     @GetMapping("/deleted")
-    public ResponseEntity<ApiResponse<List<UserResponse>>> getDeletedUsers(){
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getDeletedUsers() {
 
         List<UserResponse> res = userService.getDeletedUsers();
 
@@ -278,6 +278,20 @@ public class UserController {
                         .success(true)
                         .message(SuccessMessages.PASSWORD_UPDATED)
                         .data(null)
+                        .build()
+        );
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<UserResponse>> me() {
+        UserResponse userResponse = userService.getMeUser();
+
+        return ResponseEntity.ok(
+                ApiResponse.<UserResponse>builder()
+                        .success(true)
+                        .message(SuccessMessages.USER_RETRIEVED)
+                        .data(userResponse)
                         .build()
         );
     }
