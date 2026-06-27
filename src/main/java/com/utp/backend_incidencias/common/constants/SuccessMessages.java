@@ -36,6 +36,9 @@ public class SuccessMessages {
     public static final String USER_UPDATED =
             "Usuario actualizado correctamente";
 
+    public static final String USER_IMAGE_UPDATED =
+            "Foto de usuario actualizada correctamente";
+
     public static final String USER_UPDATED_BY_COORDINATOR =
             "Usuario actualizado por coordinador correctamente";
 

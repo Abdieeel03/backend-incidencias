@@ -38,6 +38,9 @@ public class ErrorMessages {
     public static final String USERNAME_ALREADY_EXISTS =
             "El username ya está registrado";
 
+    public static final String IMAGE_URL_REQUIRED =
+            "La URL de la imagen es obligatoria";
+
     public static final String INVALID_CREDENTIALS =
             "Credenciales inválidas";
 

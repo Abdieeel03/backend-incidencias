@@ -1,6 +1,7 @@
 package com.utp.backend_incidencias.user.service.impl;
 
 import com.utp.backend_incidencias.common.constants.ErrorMessages;
+import com.utp.backend_incidencias.common.exception.BadRequestException;
 import com.utp.backend_incidencias.common.exception.ConflictException;
 import com.utp.backend_incidencias.common.exception.ForbiddenException;
 import com.utp.backend_incidencias.common.exception.ResourceNotFoundException;
@@ -193,6 +194,27 @@ public class UserServiceImpl implements UserService {
 
         log.info(
                 "Usuario actualizado correctamente con id: {}",
+                updatedUser.getId()
+        );
+
+        return UserMapper.toResponse(updatedUser);
+    }
+
+    @Override
+    public UserResponse updateImageUrl(String imageUrl) {
+
+        if (imageUrl == null || imageUrl.isBlank()) {
+            throw new BadRequestException(ErrorMessages.IMAGE_URL_REQUIRED);
+        }
+
+        User user = securityService.getCurrentUser();
+
+        user.setImageUrl(imageUrl.trim());
+
+        User updatedUser = userRepository.save(user);
+
+        log.info(
+                "Foto de usuario actualizada correctamente con id: {}",
                 updatedUser.getId()
         );
 
