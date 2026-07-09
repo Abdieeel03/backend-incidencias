@@ -63,7 +63,7 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
             addTitleBanner(document, "REPORTE DE INCIDENCIAS", "Estudiante");
             addSeparator(document);
             addSectionTitle(document, "Información del Estudiante");
-            addStudentInfo(document, student);
+            addStudentInfo(document, student, incidents != null ? incidents.size() : 0);
             addSeparator(document);
             addSectionTitle(document, "Registro de Incidencias");
             addIncidentTable(document, incidents, false);
@@ -159,7 +159,7 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
 
     // ========================= SECCIÓN: INFORMACIÓN =========================
 
-    private void addStudentInfo(Document document, Student student) throws DocumentException {
+    private void addStudentInfo(Document document, Student student, int totalIncidents) throws DocumentException {
         PdfPTable table = new PdfPTable(4);
         table.setWidthPercentage(100);
         table.setSpacingAfter(10f);
@@ -172,7 +172,7 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
         addInfoRow(table, "DNI", student.getDni());
         addInfoRow(table, "Código", student.getStudentCode());
         // Celda vacía para completar la fila
-        addInfoRow(table, "Total Incidencias", "—");
+        addInfoRow(table, "Total Incidencias", String.valueOf(totalIncidents));
 
         document.add(table);
     }
