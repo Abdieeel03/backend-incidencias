@@ -41,14 +41,6 @@ public class ReportServiceImpl implements ReportService {
 
         log.info("Generating Student Incident Report for Student {}", studentCode);
 
-        /*
-        TODO: Generar PDF con OpenPDF -> pasarle student e incidents
-        - Student para los datos del estudiante en el pdf
-        - Incidents para las incidencias
-        Pasarle los 2 para no volver a llamar a la base de datos innecesariamente
-        TODO: Construir el nombre del archivo -> tambien se construye en el PdfService
-         */
-
         return pdfGeneratorService.generateStudentIncidentReport(student, incidents);
     }
 
@@ -61,14 +53,6 @@ public class ReportServiceImpl implements ReportService {
         ownershipService.validateClassAccess(schoolClass);
 
         List<Incident> incidents = incidentRepository.findAllBySchoolClass(schoolClass);
-
-        /*
-        TODO: Generar PDF con OpenPDF -> pasarle schoolClass e incidents
-        - schoolClass para los datos de la clase en el pdf
-        - Incidents para las incidencias
-        Pasarle los 2 para no volver a llamar a la base de datos innecesariamente
-        TODO: Construir el nombre del archivo -> tambien se construye en el PdfService
-         */
 
         return pdfGeneratorService.generateSchoolClassIncidentReport(schoolClass, incidents);
     }
