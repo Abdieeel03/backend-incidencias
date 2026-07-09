@@ -1,29 +1,75 @@
 package com.utp.backend_incidencias.report.service.impl;
 
+import com.utp.backend_incidencias.common.constants.ErrorMessages;
+import com.utp.backend_incidencias.common.exception.ResourceNotFoundException;
+import com.utp.backend_incidencias.incident.entity.Incident;
+import com.utp.backend_incidencias.incident.repository.IncidentRepository;
 import com.utp.backend_incidencias.report.dto.PdfReport;
+import com.utp.backend_incidencias.report.pdf.PdfGeneratorService;
 import com.utp.backend_incidencias.report.service.ReportService;
+import com.utp.backend_incidencias.schoolclass.entity.SchoolClass;
+import com.utp.backend_incidencias.schoolclass.repository.SchoolClassRepository;
+import com.utp.backend_incidencias.security.service.OwnershipService;
+import com.utp.backend_incidencias.student.entity.Student;
+import com.utp.backend_incidencias.student.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @RequiredArgsConstructor
+@Service
+@Slf4j
 public class ReportServiceImpl implements ReportService {
+
+    private final StudentRepository studentRepository;
+    private final SchoolClassRepository schoolClassRepository;
+    private final IncidentRepository incidentRepository;
+    private final OwnershipService ownershipService;
+    private final PdfGeneratorService pdfGeneratorService;
 
     @Override
     public PdfReport generateStudentIncidentReport(String studentCode) {
 
-        //TODO: Obtener datos del alumno
-        //TODO: Generar PDF con OpenPDF
-        //TODO: Construir el nombre del archivo
+        Student student = studentRepository.findByStudentCode(studentCode)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.STUDENT_NOT_FOUND));
 
-        throw new UnsupportedOperationException("Not implement yet.");
+        ownershipService.validateStudentAccess(student);
+
+        List<Incident> incidents = incidentRepository.findAllByStudent(student);
+
+        log.info("Generating Student Incident Report for Student {}", studentCode);
+
+        /*
+        TODO: Generar PDF con OpenPDF -> pasarle student e incidents
+        - Student para los datos del estudiante en el pdf
+        - Incidents para las incidencias
+        Pasarle los 2 para no volver a llamar a la base de datos innecesariamente
+        TODO: Construir el nombre del archivo -> tambien se construye en el PdfService
+         */
+
+        return pdfGeneratorService.generateStudentIncidentReport(student, incidents);
     }
 
     @Override
     public PdfReport generateClassIncidentReport(Long classId) {
 
-        //TODO: Obtener datos del alumno
-        //TODO: Generar PDF con OpenPDF
-        //TODO: Construir el nombre del archivo
+        SchoolClass schoolClass = schoolClassRepository.findById(classId)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.CLASS_NOT_FOUND));
 
-        throw new UnsupportedOperationException("Not implement yet.");
+        ownershipService.validateClassAccess(schoolClass);
+
+        List<Incident> incidents = incidentRepository.findAllBySchoolClass(schoolClass);
+
+        /*
+        TODO: Generar PDF con OpenPDF -> pasarle schoolClass e incidents
+        - schoolClass para los datos de la clase en el pdf
+        - Incidents para las incidencias
+        Pasarle los 2 para no volver a llamar a la base de datos innecesariamente
+        TODO: Construir el nombre del archivo -> tambien se construye en el PdfService
+         */
+
+        return pdfGeneratorService.generateSchoolClassIncidentReport(schoolClass, incidents);
     }
 }
