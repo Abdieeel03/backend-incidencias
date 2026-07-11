@@ -5,6 +5,7 @@ import com.utp.backend_incidencias.common.response.ApiResponse;
 import com.utp.backend_incidencias.user.dto.request.ChangePasswordRequest;
 import com.utp.backend_incidencias.user.dto.request.CoordinatorUpdateUserRequest;
 import com.utp.backend_incidencias.user.dto.request.CreateUserRequest;
+import com.utp.backend_incidencias.user.dto.request.UpdateImageUrlRequest;
 import com.utp.backend_incidencias.user.dto.request.UpdateUserRequest;
 import com.utp.backend_incidencias.user.dto.response.UserResponse;
 import com.utp.backend_incidencias.user.enums.Role;
@@ -177,7 +178,7 @@ public class UserController {
             "hasRole('ADMIN') or hasRole('COORDINADOR')"
     )
     @GetMapping("/deleted")
-    public ResponseEntity<ApiResponse<List<UserResponse>>> getDeletedUsers(){
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getDeletedUsers() {
 
         List<UserResponse> res = userService.getDeletedUsers();
 
@@ -205,6 +206,23 @@ public class UserController {
                 ApiResponse.<UserResponse>builder()
                         .success(true)
                         .message(SuccessMessages.USER_UPDATED)
+                        .data(updatedUser)
+                        .build()
+        );
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PatchMapping("/me/image-url")
+    public ResponseEntity<ApiResponse<UserResponse>> updateImageUrl(
+            @Valid @RequestBody UpdateImageUrlRequest req
+    ) {
+
+        UserResponse updatedUser = userService.updateImageUrl(req.getImageUrl());
+
+        return ResponseEntity.ok(
+                ApiResponse.<UserResponse>builder()
+                        .success(true)
+                        .message(SuccessMessages.USER_IMAGE_UPDATED)
                         .data(updatedUser)
                         .build()
         );
@@ -278,6 +296,20 @@ public class UserController {
                         .success(true)
                         .message(SuccessMessages.PASSWORD_UPDATED)
                         .data(null)
+                        .build()
+        );
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<UserResponse>> me() {
+        UserResponse userResponse = userService.getMeUser();
+
+        return ResponseEntity.ok(
+                ApiResponse.<UserResponse>builder()
+                        .success(true)
+                        .message(SuccessMessages.USER_RETRIEVED)
+                        .data(userResponse)
                         .build()
         );
     }

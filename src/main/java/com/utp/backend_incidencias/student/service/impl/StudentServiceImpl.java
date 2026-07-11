@@ -29,280 +29,251 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
 
-    private final StudentRepository studentRepository;
-    private final UserRepository userRepository;
-    private final SecurityService securityService;
-    private final OwnershipService ownershipService;
-    private final CodeGenerationHelper codeGenerationHelper;
+        private final StudentRepository studentRepository;
+        private final UserRepository userRepository;
+        private final SecurityService securityService;
+        private final OwnershipService ownershipService;
+        private final CodeGenerationHelper codeGenerationHelper;
 
-    @Override
-    public StudentResponse createStudent(CreateStudentRequest req) {
+        @Override
+        public StudentResponse createStudent(CreateStudentRequest req) {
 
-        User currentUser = securityService.getCurrentUser();
+                User currentUser = securityService.getCurrentUser();
 
-        verifyExistingDni(req.getDni());
+                verifyExistingDni(req.getDni());
 
-        User parent = userRepository
-                .findByIdAndIsDeletedFalse(req.getParentId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                ErrorMessages.USER_NOT_FOUND
-                        ));
+                User parent = userRepository
+                                .findByIdAndIsDeletedFalse(req.getParentId())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                ErrorMessages.USER_NOT_FOUND));
 
-        ownershipService.validateUserOwnership(parent);
+                ownershipService.validateUserOwnership(parent);
 
-        verifyRolePadre(parent.getRole());
+                verifyRolePadre(parent.getRole());
 
-        Student student = StudentMapper.toEntity(req);
+                Student student = StudentMapper.toEntity(req);
 
-        student.setStudentCode(
-                codeGenerationHelper.generateStudentCode(
-                        req.getDni()
-                )
-        );
+                student.setStudentCode(
+                                codeGenerationHelper.generateStudentCode(
+                                                req.getDni()));
 
-        student.setParent(parent);
+                student.setParent(parent);
 
-        student.setCreatedBy(currentUser);
+                student.setCreatedBy(currentUser);
 
-        Student savedStudent = studentRepository.save(student);
+                Student savedStudent = studentRepository.save(student);
 
-        log.info(
-                "Estudiante creado correctamente con id: {}",
-                savedStudent.getId()
-        );
+                log.info(
+                                "Estudiante creado correctamente con id: {}",
+                                savedStudent.getId());
 
-        return StudentMapper.toResponse(savedStudent);
-    }
-
-    @Override
-    public StudentResponse getStudentById(Long id) {
-
-        Student student = findStudentById(id);
-
-        ownershipService.validateStudentOwnership(student);
-
-        return StudentMapper.toResponse(student);
-    }
-
-    @Override
-    public List<StudentResponse> getAllStudents() {
-
-        User currentUser = securityService.getCurrentUser();
-
-        if (currentUser.getRole() == Role.ADMIN) {
-            return studentRepository
-                    .findAllByIsDeletedFalse()
-                    .stream()
-                    .map(StudentMapper::toResponse)
-                    .toList();
+                return StudentMapper.toResponse(savedStudent);
         }
 
-        return studentRepository
-                .findAllByCreatedByAndIsDeletedFalse(currentUser)
-                .stream()
-                .map(StudentMapper::toResponse)
-                .toList();
-    }
+        @Override
+        public StudentResponse getStudentById(Long id) {
 
-    @Override
-    public StudentDetailResponse getStudentDetails(Long id) {
+                Student student = findStudentById(id);
 
-        Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.STUDENT_NOT_FOUND));
+                ownershipService.validateStudentOwnership(student);
 
-        ownershipService.validateStudentAccess(student);
-
-        return StudentMapper.toDetailResponse(student);
-    }
-
-    @Override
-    public List<StudentResponse> getDeletedStudents() {
-
-        User currentUser = securityService.getCurrentUser();
-
-        if (currentUser.getRole() == Role.ADMIN) {
-
-            return studentRepository.findAllByIsDeletedTrue()
-                    .stream()
-                    .map(StudentMapper::toResponse)
-                    .toList();
+                return StudentMapper.toResponse(student);
         }
 
-        return studentRepository
-                .findAllByCreatedByAndIsDeletedTrue(currentUser)
-                .stream()
-                .map(StudentMapper::toResponse)
-                .toList();
-    }
+        @Override
+        public List<StudentResponse> getAllStudents() {
 
-    @Override
-    public List<StudentResponse> getStudentsByParentId(Long parentId) {
+                User currentUser = securityService.getCurrentUser();
 
-        User currentUser = securityService.getCurrentUser();
+                if (currentUser.getRole() == Role.ADMIN) {
+                        return studentRepository
+                                        .findAllByIsDeletedFalse()
+                                        .stream()
+                                        .map(StudentMapper::toResponse)
+                                        .toList();
+                }
 
-        if (currentUser.getRole() == Role.PADRE) {
-
-            return studentRepository
-                    .findAllByParentAndIsDeletedFalse(currentUser)
-                    .stream()
-                    .map(StudentMapper::toResponse)
-                    .toList();
+                return studentRepository
+                                .findAllByCreatedByAndIsDeletedFalse(currentUser)
+                                .stream()
+                                .map(StudentMapper::toResponse)
+                                .toList();
         }
 
-        User parent = userRepository
-                .findByIdAndIsDeletedFalse(parentId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                ErrorMessages.USER_NOT_FOUND
-                        )
-                );
+        @Override
+        public StudentDetailResponse getStudentDetails(Long id) {
 
-        ownershipService.validateUserOwnership(parent);
+                Student student = studentRepository.findById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.STUDENT_NOT_FOUND));
 
-        verifyRolePadre(parent.getRole());
+                ownershipService.validateStudentAccess(student);
 
-        return studentRepository
-                .findAllByParentAndIsDeletedFalse(parent)
-                .stream()
-                .map(StudentMapper::toResponse)
-                .toList();
-    }
-
-    @Override
-    public List<StudentResponse> searchStudents(String query) {
-        User currentUser = securityService.getCurrentUser();
-
-        return studentRepository.searchStudents(query)
-                .stream()
-                .filter(student ->
-                        student.getCreatedBy()
-                                .getId()
-                                .equals(currentUser.getId())
-                )
-                .map(StudentMapper::toResponse)
-                .toList();
-    }
-
-    @Override
-    public StudentResponse updateStudent(Long id, UpdateStudentRequest req) {
-
-        Student student = findStudentById(id);
-
-        ownershipService.validateStudentOwnership(student);
-
-        if (studentRepository.existsByDniAndIdNot(
-                req.getDni(),
-                student.getId()
-        )) {
-            throw new ConflictException(
-                    ErrorMessages.DNI_ALREADY_EXISTS
-            );
+                return StudentMapper.toDetailResponse(student);
         }
 
-        User parent = userRepository
-                .findByIdAndIsDeletedFalse(req.getParentId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                ErrorMessages.USER_NOT_FOUND
-                        )
-                );
+        @Override
+        public List<StudentResponse> getDeletedStudents() {
 
-        ownershipService.validateUserOwnership(parent);
+                User currentUser = securityService.getCurrentUser();
 
-        verifyRolePadre(parent.getRole());
+                if (currentUser.getRole() == Role.ADMIN) {
 
-        StudentMapper.updateEntity(student, req);
+                        return studentRepository.findAllByIsDeletedTrue()
+                                        .stream()
+                                        .map(StudentMapper::toResponse)
+                                        .toList();
+                }
 
-        student.setStudentCode(
-                codeGenerationHelper.generateStudentCode(
-                        student.getDni()
-                )
-        );
-
-        student.setParent(parent);
-
-        Student updatedStudent = studentRepository.save(student);
-
-        log.info(
-                "Estudiante actualizado correctamente con id: {}",
-                updatedStudent.getId()
-        );
-
-        return StudentMapper.toResponse(updatedStudent);
-    }
-
-    @Override
-    public void deleteStudent(Long id) {
-
-        Student student = findStudentById(id);
-
-        ownershipService.validateStudentOwnership(student);
-
-        student.setIsDeleted(true);
-
-        studentRepository.save(student);
-
-        log.info(
-                "Estudiante eliminado correctamente con id: {}",
-                student.getId()
-        );
-    }
-
-    @Override
-    public void restoreStudent(Long id) {
-
-        Student student = studentRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                ErrorMessages.STUDENT_NOT_FOUND
-                        )
-                );
-
-        ownershipService.validateStudentOwnership(student);
-
-        if (!student.getIsDeleted()) {
-            throw new ConflictException(
-                    ErrorMessages.STUDENT_ALREADY_ACTIVE
-            );
+                return studentRepository
+                                .findAllByCreatedByAndIsDeletedTrue(currentUser)
+                                .stream()
+                                .map(StudentMapper::toResponse)
+                                .toList();
         }
 
-        student.setIsDeleted(false);
+        @Override
+        public List<StudentResponse> getStudentsByParentId(Long parentId) {
 
-        studentRepository.save(student);
+                User currentUser = securityService.getCurrentUser();
 
-        log.info(
-                "Estudiante restaurado correctamente con id: {}",
-                student.getId()
-        );
-    }
+                if (currentUser.getRole() == Role.PADRE) {
 
-    private Student findStudentById(Long id) {
+                        return studentRepository
+                                        .findAllByParentAndIsDeletedFalse(currentUser)
+                                        .stream()
+                                        .map(StudentMapper::toResponse)
+                                        .toList();
+                }
 
-        return studentRepository
-                .findByIdAndIsDeletedFalse(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                ErrorMessages.STUDENT_NOT_FOUND
-                        )
-                );
-    }
+                User parent = userRepository
+                                .findByIdAndIsDeletedFalse(parentId)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                ErrorMessages.USER_NOT_FOUND));
 
-    private void verifyExistingDni(String dni) {
+                ownershipService.validateUserOwnership(parent);
 
-        if (studentRepository.existsByDni(dni)) {
-            throw new ConflictException(
-                    ErrorMessages.DNI_ALREADY_EXISTS
-            );
+                verifyRolePadre(parent.getRole());
+
+                return studentRepository
+                                .findAllByParentAndIsDeletedFalse(parent)
+                                .stream()
+                                .map(StudentMapper::toResponse)
+                                .toList();
         }
-    }
 
-    private void verifyRolePadre(Role role) {
+        @Override
+        public List<StudentResponse> searchStudents(String query) {
+                User currentUser = securityService.getCurrentUser();
 
-        if (role != Role.PADRE) {
-            throw new ConflictException(
-                    ErrorMessages.USER_ROLE_NOT_PADRE
-            );
+                return studentRepository.searchStudents(query)
+                                .stream()
+                                .filter(student -> student.getCreatedBy()
+                                                .getId()
+                                                .equals(currentUser.getId()))
+                                .map(StudentMapper::toResponse)
+                                .toList();
         }
-    }
+
+        @Override
+        public StudentResponse updateStudent(Long id, UpdateStudentRequest req) {
+
+                Student student = findStudentById(id);
+
+                ownershipService.validateStudentOwnership(student);
+
+                if (studentRepository.existsByDniAndIdNot(
+                                req.getDni(),
+                                student.getId())) {
+                        throw new ConflictException(
+                                        ErrorMessages.DNI_ALREADY_EXISTS);
+                }
+
+                User parent = userRepository
+                                .findByIdAndIsDeletedFalse(req.getParentId())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                ErrorMessages.USER_NOT_FOUND));
+
+                ownershipService.validateUserOwnership(parent);
+
+                verifyRolePadre(parent.getRole());
+
+                StudentMapper.updateEntity(student, req);
+
+                student.setStudentCode(
+                                codeGenerationHelper.generateStudentCode(
+                                                student.getDni()));
+
+                student.setParent(parent);
+
+                Student updatedStudent = studentRepository.save(student);
+
+                log.info(
+                                "Estudiante actualizado correctamente con id: {}",
+                                updatedStudent.getId());
+
+                return StudentMapper.toResponse(updatedStudent);
+        }
+
+        @Override
+        public void deleteStudent(Long id) {
+
+                Student student = findStudentById(id);
+
+                ownershipService.validateStudentOwnership(student);
+
+                student.setIsDeleted(true);
+
+                studentRepository.save(student);
+
+                log.info(
+                                "Estudiante eliminado correctamente con id: {}",
+                                student.getId());
+        }
+
+        @Override
+        public void restoreStudent(Long id) {
+
+                Student student = studentRepository.findById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                ErrorMessages.STUDENT_NOT_FOUND));
+
+                ownershipService.validateStudentOwnership(student);
+
+                if (!student.getIsDeleted()) {
+                        throw new ConflictException(
+                                        ErrorMessages.STUDENT_ALREADY_ACTIVE);
+                }
+
+                student.setIsDeleted(false);
+
+                studentRepository.save(student);
+
+                log.info(
+                                "Estudiante restaurado correctamente con id: {}",
+                                student.getId());
+        }
+
+        private Student findStudentById(Long id) {
+
+                return studentRepository
+                                .findByIdAndIsDeletedFalse(id)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                ErrorMessages.STUDENT_NOT_FOUND));
+        }
+
+        private void verifyExistingDni(String dni) {
+
+                if (studentRepository.existsByDni(dni)) {
+                        throw new ConflictException(
+                                        ErrorMessages.DNI_ALREADY_EXISTS);
+                }
+        }
+
+        private void verifyRolePadre(Role role) {
+
+                if (role != Role.PADRE) {
+                        throw new ConflictException(
+                                        ErrorMessages.USER_ROLE_NOT_PADRE);
+                }
+        }
 }

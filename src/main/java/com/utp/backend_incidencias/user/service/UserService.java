@@ -29,6 +29,8 @@ public interface UserService {
 
     UserResponse updateUser(UpdateUserRequest req);
 
+    UserResponse updateImageUrl(String imageUrl);
+
     UserResponse updateUserByCoordinator(Long id, CoordinatorUpdateUserRequest req);
 
     void deleteUser(Long id);
@@ -38,4 +40,6 @@ public interface UserService {
     );
 
     void restoreUser(Long id);
+
+    UserResponse getMeUser();
 }

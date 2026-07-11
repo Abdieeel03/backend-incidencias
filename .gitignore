@@ -33,8 +33,13 @@ out/
 /nbdist/
 /.nb-gradle/
 
+## Agents ##
+.codegraph
+
 ### VS Code ###
 .vscode/
 
 ### Enviroment ###
 .env
+
+/src/main/java/com/utp/backend_incidencias/common/config/DataLoader.java

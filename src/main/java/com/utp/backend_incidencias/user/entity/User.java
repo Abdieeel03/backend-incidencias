@@ -34,6 +34,9 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column(name = "image_url", columnDefinition = "TEXT")
+    private String imageUrl;
+
     @Column(nullable = false)
     @Builder.Default
     protected Boolean isDeleted = false;
