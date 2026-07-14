@@ -73,4 +73,7 @@ public class ErrorMessages {
 
     public static final String EMPTY_STUDENT_IDS =
             "La lista de estudiantes no puede estar vacía";
+
+    public static final String REPORT_GENERATION_FAILED =
+            "Error al generar el reporte PDF";
 }

@@ -26,4 +26,8 @@ public interface IncidentRepository extends JpaRepository<Incident, Long> {
     List<Incident> findAllByStudentAndIsDeletedFalse(Student student);
 
     List<Incident> findAllBySchoolClassAndIsDeletedFalse(SchoolClass schoolClass);
+
+    List<Incident> findAllByStudent(Student student);
+
+    List<Incident> findAllBySchoolClass(SchoolClass schoolClass);
 }

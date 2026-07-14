@@ -54,6 +54,9 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// OpenPDF
+	implementation 'com.github.librepdf:openpdf:3.0.5'
 }
 
 tasks.named('test') {
